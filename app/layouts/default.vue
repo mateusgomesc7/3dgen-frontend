@@ -1,66 +1,56 @@
 <template>
   <v-app>
     <v-layout ref="app" class="rounded rounded-md border">
-    <v-app-bar color="surface-variant" name="app-bar">
-      <child v-slot="{ print }">
-        <v-btn class="mx-auto" @click="print('app-bar')">Get data</v-btn>
-      </child>
-    </v-app-bar>
+      <NavigationDrawer />
 
-    <v-navigation-drawer
-      color="surface-light"
-      name="drawer"
-      permanent
-    >
-      <div class="d-flex justify-center align-center h-100">
+      <v-app-bar color="surface-variant" name="app-bar">
         <child v-slot="{ print }">
-          <v-btn variant="text" @click="print('drawer')">Get data</v-btn>
+          <v-btn class="mx-auto" @click="print('app-bar')">Get data</v-btn>
         </child>
-      </div>
-    </v-navigation-drawer>
+      </v-app-bar>
 
-    <v-main class="d-flex align-center justify-center" height="300">
-      <v-container>
-        <v-sheet
-          border="dashed md"
-          color="surface-light"
-          height="150"
-          rounded="lg"
-          width="100%"
-        >
-    
-        <slot />
-    </v-sheet>
-      </v-container>
-    </v-main>
+      <v-main class="d-flex align-center justify-center" height="300">
+        <v-container>
+          <v-sheet
+            border="dashed md"
+            color="surface-light"
+            height="150"
+            rounded="lg"
+            width="100%"
+          >
+            <slot />
+          </v-sheet>
+        </v-container>
+      </v-main>
 
-    <v-footer color="surface-light" name="footer" app>
-      <child v-slot="{ print }">
-        <v-btn
-          class="mx-auto"
-          text="Get data"
-          variant="text"
-          @click="print('footer')"
-        ></v-btn>
-      </child>
-    </v-footer>
-  </v-layout>
+      <v-footer color="surface-light" name="footer" app>
+        <child v-slot="{ print }">
+          <v-btn
+            class="mx-auto"
+            text="Get data"
+            variant="text"
+            @click="print('footer')"
+          ></v-btn>
+        </child>
+      </v-footer>
+    </v-layout>
   </v-app>
 </template>
 
 <script setup lang="ts">
-  import { useLayout } from 'vuetify'
-  import type { SetupContext } from 'vue'
+import { useLayout } from "vuetify";
+import type { SetupContext } from "vue";
+import NavigationDrawer from "~/components/layout-default/NavigationDrawer.vue";
 
-  const Child = {
-    setup (_props: unknown, ctx: SetupContext) {
-      const { getLayoutItem } = useLayout()
+const Child = {
+  setup(_props: unknown, ctx: SetupContext) {
+    const { getLayoutItem } = useLayout();
 
-      function print (key: string) {
-        alert(JSON.stringify(getLayoutItem(key), null, 2))
-      }
+    function print(key: string) {
+      alert(JSON.stringify(getLayoutItem(key), null, 2));
+    }
 
-      return () => ctx.slots.default ? ({ print }) : null
-    },
-  }
+    return () => (ctx.slots.default ? { print } : null);
+  },
+};
 </script>
