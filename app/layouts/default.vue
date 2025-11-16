@@ -3,11 +3,7 @@
     <v-layout ref="app" class="rounded rounded-md border">
       <NavigationDrawer />
 
-      <v-app-bar color="surface-variant" name="app-bar">
-        <child v-slot="{ print }">
-          <v-btn class="mx-auto" @click="print('app-bar')">Get data</v-btn>
-        </child>
-      </v-app-bar>
+      <TopBar />
 
       <v-main class="d-flex align-center justify-center" height="300">
         <v-container>
@@ -40,7 +36,8 @@
 <script setup lang="ts">
 import { useLayout } from "vuetify";
 import type { SetupContext } from "vue";
-import NavigationDrawer from "~/components/layout-default/NavigationDrawer.vue";
+import NavigationDrawer from "@/components/layout-default/NavigationDrawer.vue";
+import TopBar from "@/components/layout-default/TopBar.vue";
 
 const Child = {
   setup(_props: unknown, ctx: SetupContext) {
