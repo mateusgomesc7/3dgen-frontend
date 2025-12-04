@@ -7,19 +7,13 @@
 
       <v-main class="d-flex align-center justify-center" height="300">
         <v-container>
-          <v-sheet
-            border="dashed md"
-            color="surface-light"
-            height="150"
-            rounded="lg"
-            width="100%"
-          >
+          <v-sheet border="dashed md" height="150" rounded="lg" width="100%">
             <slot />
           </v-sheet>
         </v-container>
       </v-main>
 
-      <v-footer color="surface-light" name="footer" app>
+      <v-footer name="footer" app>
         <child v-slot="{ print }">
           <v-btn
             class="mx-auto"
