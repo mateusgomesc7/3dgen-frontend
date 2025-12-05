@@ -1,19 +1,51 @@
 <template>
   <div class="d-flex flex-column justify-center align-center w-100">
     <h2 class="text-h4 mb-8">What do you want to generate?</h2>
-    <v-text-field
+    <v-textarea
       placeholder="Describe the 3D object…"
       variant="outlined"
       width="100%"
-      class="px-10"
+      class="px-10 thin-scroll"
       rounded="xl"
       bg-color="grey-darken-3"
       base-color="grey-darken-2"
       color="grey-darken-2"
-    ></v-text-field>
+      rows="1"
+      max-rows="15"
+      auto-grow
+    ></v-textarea>
   </div>
 </template>
 
 <script setup></script>
 
-<style scoped></style>
+<style scoped>
+::v-deep(.thin-scroll .v-field--active .v-field__field) {
+  padding-right: 16px !important;
+  --v-input-padding-top: 6px !important;
+}
+
+/* Chrome / Edge / WebKit */
+::v-deep(.thin-scroll .v-field__input::-webkit-scrollbar) {
+  width: 6px;
+}
+
+::v-deep(.thin-scroll .v-field__input::-webkit-scrollbar-track) {
+  background: transparent;
+}
+
+::v-deep(.thin-scroll .v-field__input::-webkit-scrollbar-thumb) {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 100px;
+}
+
+::v-deep(.thin-scroll .v-field__input::-webkit-scrollbar-thumb:hover) {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Firefox */
+::v-deep(.thin-scroll .v-field__input) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+</style>
