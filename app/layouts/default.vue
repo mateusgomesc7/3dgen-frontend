@@ -5,9 +5,15 @@
 
       <TopBar />
 
-      <v-main class="d-flex align-center justify-center" height="300">
-        <v-container>
-          <v-sheet border="dashed md" height="150" rounded="lg" width="100%">
+      <v-main class="d-flex align-center justify-center" height="100%">
+        <v-container height="100%">
+          <v-sheet
+            border="dashed md"
+            class="d-flex justify-center align-center"
+            height="100%"
+            rounded="lg"
+            width="100%"
+          >
             <slot />
           </v-sheet>
         </v-container>
