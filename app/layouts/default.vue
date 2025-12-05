@@ -18,17 +18,6 @@
           </v-sheet>
         </v-container>
       </v-main>
-
-      <v-footer name="footer" app>
-        <child v-slot="{ print }">
-          <v-btn
-            class="mx-auto"
-            text="Get data"
-            variant="text"
-            @click="print('footer')"
-          ></v-btn>
-        </child>
-      </v-footer>
     </v-layout>
   </v-app>
 </template>
