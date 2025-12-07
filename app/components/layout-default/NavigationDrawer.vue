@@ -19,11 +19,7 @@
                   @click.stop="rail = !rail"
                   size="30"
                 >
-                  <img
-                    src="@/assets/icons/navigation-opener.svg"
-                    alt="Expand"
-                    style="width: 18px; height: 18px"
-                  />
+                  <v-icon size="25" class="rotate-90">mdi-window-closed</v-icon>
                 </v-btn>
                 <v-btn v-show="!isHovering || !rail" variant="text" size="32">
                   <v-icon size="27">mdi-cube-outline</v-icon>
@@ -40,11 +36,7 @@
             @click.stop="rail = !rail"
             size="30"
           >
-            <img
-              src="@/assets/icons/navigation-opener.svg"
-              alt="Expand"
-              style="width: 18px; height: 18px"
-            />
+            <v-icon size="25" class="rotate-90">mdi-window-closed</v-icon>
           </v-btn>
         </template>
       </v-list-item>
@@ -69,9 +61,7 @@
   </v-navigation-drawer>
 </template>
 
-<script setup>
-import { ref } from "vue";
-
+<script setup lang="ts">
 const drawer = ref(true);
 const rail = ref(true);
 </script>
@@ -83,5 +73,9 @@ const rail = ref(true);
 
 .cursor-ew-resize {
   cursor: ew-resize;
+}
+
+.rotate-90 {
+  transform: rotate(-90deg);
 }
 </style>
