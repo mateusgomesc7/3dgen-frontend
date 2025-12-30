@@ -1,25 +1,13 @@
 <template>
-  <v-app>
-    <v-layout ref="app" class="rounded rounded-md border">
-      <NavigationDrawer />
+  <v-layout class="fill-height">
+    <NavigationDrawer />
 
-      <TopBar />
+    <TopBar />
 
-      <v-main class="d-flex align-center justify-center" height="100%">
-        <v-container height="100%">
-          <v-sheet
-            border="dashed md"
-            class="d-flex justify-center align-center"
-            height="100%"
-            rounded="lg"
-            width="100%"
-          >
-            <slot />
-          </v-sheet>
-        </v-container>
-      </v-main>
-    </v-layout>
-  </v-app>
+    <v-main class="main-content">
+      <slot />
+    </v-main>
+  </v-layout>
 </template>
 
 <script setup lang="ts">
@@ -40,3 +28,9 @@ const Child = {
   },
 };
 </script>
+
+<style scoped>
+.main-content {
+  --v-layout-top: 0px !important;
+}
+</style>

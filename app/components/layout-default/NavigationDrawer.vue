@@ -1,5 +1,6 @@
 <template>
   <v-navigation-drawer
+    app
     v-model="drawer"
     :rail="rail"
     :class="{ 'cursor-ew-resize': rail }"

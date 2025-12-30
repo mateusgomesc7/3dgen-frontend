@@ -1,80 +1,76 @@
 <template>
-  <div class="d-flex flex-column justify-center align-center w-100">
-    <h2 class="text-h4 mb-8">What do you want to generate?</h2>
-    <v-textarea
-      v-model="text"
-      placeholder="Describe the 3D object…"
-      variant="outlined"
-      width="100%"
-      max-width="940px"
-      class="px-10 thin-scroll"
-      rounded="xl"
-      bg-color="grey-darken-3"
-      base-color="grey-darken-2"
-      color="grey-darken-2"
-      rows="1"
-      max-rows="15"
-      auto-grow
-      @keydown="onKeyDown"
+  <div
+    ref="messagesContainer"
+    class="chat-container px-8 d-flex flex-column align-center"
+  >
+    <div
+      v-if="chatStarted"
+      v-for="message in messages"
+      :key="message.id"
+      class="w-100 mb-8"
     >
-      <template v-slot:append-inner>
-        <v-btn icon @click="generate" variant="plain">
-          <v-icon icon="mdi-arrow-up-circle" size="40" />
-        </v-btn>
-      </template>
-    </v-textarea>
+      <SentMessage :text="message.sentText" />
+      <ReceivedMessage :text="message.receivedText" />
+    </div>
+
+    <div ref="bottomEl" />
+
+    <h2 v-if="!chatStarted" class="text-h4 mb-8">
+      What do you want to generate?
+    </h2>
+
+    <div class="chat-input-wrapper w-100">
+      <ChatInput @send-message="handleSendMessage" />
+    </div>
   </div>
 </template>
 
 <script setup>
-const text = ref("");
+import ChatInput from "./ChatInput.vue";
+import SentMessage from "./SentMessage.vue";
+import ReceivedMessage from "./ReceivedMessage.vue";
 
-const generate = () => {
-  if (!text.value.trim()) return;
+const messagesContainer = ref(null);
+const bottomEl = ref(null);
+const chatStarted = ref(false);
+const messages = ref([
+  {
+    id: 1,
+    sentText: "Hello! How can I help you today?",
+    receivedText: "I'm looking to generate some ideas.",
+  },
+]);
 
-  console.log("Generate!");
-  text.value = "";
+const handleSendMessage = async (text) => {
+  chatStarted.value = true;
+  const newMessage = {
+    id: messages.value.length + 1,
+    sentText: text,
+    receivedText: "This is a placeholder response.",
+  };
+  messages.value.push(newMessage);
 };
 
-const onKeyDown = (e) => {
-  if (e.key === "Enter" && e.shiftKey) {
-    return;
-  }
+const observer = new ResizeObserver(() => {
+  bottomEl.value?.scrollIntoView({ block: "end", behavior: "smooth" });
+});
 
-  if (e.key === "Enter") {
-    e.preventDefault();
-    generate();
-  }
-};
+onMounted(() => {
+  observer.observe(messagesContainer.value);
+});
 </script>
 
 <style scoped>
-::v-deep(.thin-scroll .v-field--active .v-field__field) {
-  padding-right: 16px !important;
-  --v-input-padding-top: 6px !important;
+.chat-container {
+  width: 840px;
+  margin: 0 auto;
 }
 
-/* Chrome / Edge / WebKit */
-::v-deep(.thin-scroll .v-field__input::-webkit-scrollbar) {
-  width: 6px;
-}
-
-::v-deep(.thin-scroll .v-field__input::-webkit-scrollbar-track) {
-  background: transparent;
-}
-
-::v-deep(.thin-scroll .v-field__input::-webkit-scrollbar-thumb) {
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 100px;
-}
-
-::v-deep(.thin-scroll .v-field__input::-webkit-scrollbar-thumb:hover) {
-  background: rgba(255, 255, 255, 0.35);
-}
-
-/* Firefox */
-::v-deep(.thin-scroll .v-field__input) {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+.chat-input-wrapper {
+  position: sticky;
+  bottom: 0;
+  background: rgba(var(--v-theme-surface));
+  padding-bottom: 10px;
+  border-radius: 30% 30% 0% 0%;
 }
 </style>
