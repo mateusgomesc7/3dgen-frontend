@@ -59,12 +59,37 @@
         @click.stop
       ></v-list-item>
     </v-list>
+
+    <v-divider v-if="!rail"></v-divider>
+
+    <div v-if="!rail">
+      <div class="mx-4 mt-4 font-weight-bold">Chats</div>
+      <v-list density="compact" nav>
+        <v-list-item
+          v-for="n in chatsStore.chats.length"
+          :key="n"
+          :title="`Chat ${n}`"
+          :value="`chat-${n}`"
+          @click.stop
+        ></v-list-item>
+      </v-list>
+    </div>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
+const chatsStore = useChatsStore();
+
 const drawer = ref(true);
 const rail = ref(true);
+
+watch(
+  () => rail.value,
+  async (newValue) => {
+    if (!newValue) await chatsStore.getAllChats();
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>
