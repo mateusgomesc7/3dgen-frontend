@@ -1,3 +1,9 @@
+export interface MessagePayload {
+  chat_id: number;
+  role: string;
+  content: string;
+}
+
 export interface MessageResponse {
   id: number;
   chat_id: number;
