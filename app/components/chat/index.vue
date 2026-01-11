@@ -5,12 +5,15 @@
   >
     <div
       v-if="chatStarted"
-      v-for="message in messages"
+      v-for="message in messagesStore.messages"
       :key="message.id"
       class="w-100 mb-8"
     >
-      <SentMessage :text="message.sentText" />
-      <ReceivedMessage :text="message.receivedText" />
+      <SentMessage v-if="message.role === 'user'" :text="message.content" />
+      <ReceivedMessage
+        v-if="message.role === 'assistant'"
+        :text="message.content"
+      />
     </div>
 
     <div ref="bottomEl" />
@@ -25,39 +28,40 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ChatInput from "./ChatInput.vue";
 import SentMessage from "./SentMessage.vue";
 import ReceivedMessage from "./ReceivedMessage.vue";
+import type { MessagePayload } from "~/modules/message/message.types";
 
-const messagesContainer = ref(null);
-const bottomEl = ref(null);
+const messagesStore = useMessagesStore();
+
+const messagesContainer = ref<HTMLElement | null>(null);
+const bottomEl = ref<HTMLElement | null>(null);
 const chatStarted = ref(false);
-const messages = ref([
-  {
-    id: 1,
-    sentText: "Hello! How can I help you today?",
-    receivedText: "I'm looking to generate some ideas.",
-  },
-]);
 
-const handleSendMessage = async (text) => {
+onMounted(() => {
+  if (messagesContainer.value) {
+    observer.observe(messagesContainer.value);
+  }
+});
+
+const handleSendMessage = async (text: string) => {
   chatStarted.value = true;
-  const newMessage = {
-    id: messages.value.length + 1,
-    sentText: text,
-    receivedText: "This is a placeholder response.",
-  };
-  messages.value.push(newMessage);
+  await addMessage({
+    chat_id: 1,
+    role: "user",
+    content: text,
+  });
 };
 
 const observer = new ResizeObserver(() => {
   bottomEl.value?.scrollIntoView({ block: "end", behavior: "smooth" });
 });
 
-onMounted(() => {
-  observer.observe(messagesContainer.value);
-});
+const addMessage = async (data: MessagePayload) => {
+  await messagesStore.addMessage(data);
+};
 </script>
 
 <style scoped>

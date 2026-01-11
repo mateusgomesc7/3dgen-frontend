@@ -11,7 +11,7 @@ export const assistantApi = {
   },
 
   create(data: AssistantPayload): Promise<AssistantResponse> {
-    return api("/assistants", { method: "POST", body: data });
+    return api("/assistants/", { method: "POST", body: data });
   },
 
   update(id: string, data: AssistantPayload): Promise<AssistantResponse> {

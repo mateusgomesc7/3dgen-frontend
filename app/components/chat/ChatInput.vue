@@ -23,8 +23,10 @@
   </v-textarea>
 </template>
 
-<script setup>
-const emit = defineEmits(["sendMessage"]);
+<script setup lang="ts">
+const emit = defineEmits<{
+  sendMessage: [text: string];
+}>();
 
 const text = ref("");
 
@@ -35,7 +37,7 @@ const generate = () => {
   text.value = "";
 };
 
-const onKeyDown = (e) => {
+const onKeyDown = (e: KeyboardEvent) => {
   if (e.key === "Enter" && e.shiftKey) {
     return;
   }

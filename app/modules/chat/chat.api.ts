@@ -16,7 +16,7 @@ export const chatApi = {
   },
 
   create(data: ChatPayload): Promise<ChatResponse> {
-    return api("/chats", { method: "POST", body: data });
+    return api("/chats/", { method: "POST", body: data });
   },
 
   update(id: string, data: ChatPayload): Promise<ChatResponse> {

@@ -11,7 +11,7 @@ export const userApi = {
   },
 
   create(data: UserPayload): Promise<UserResponse> {
-    return api("/users", { method: "POST", body: data });
+    return api("/users/", { method: "POST", body: data });
   },
 
   update(id: string, data: UserPayload): Promise<UserResponse> {
