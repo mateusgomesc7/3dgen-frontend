@@ -5,6 +5,11 @@ export default defineNuxtConfig({
   ssr: false,
   compatibilityDate: "2025-07-15",
   devtools: { enabled: false },
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: "http://localhost:8000",
+    },
+  },
   build: {
     transpile: ["vuetify"],
   },
@@ -22,7 +27,11 @@ export default defineNuxtConfig({
         );
       });
     },
+    "@pinia/nuxt",
   ],
+  pinia: {
+    storesDirs: ["modules/**"],
+  },
   vite: {
     vue: {
       template: {
