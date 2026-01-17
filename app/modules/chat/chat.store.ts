@@ -2,6 +2,8 @@ import { chatApi } from "./chat.api";
 import type { ChatResponse } from "./chat.types";
 
 export const useChatsStore = defineStore("chats", () => {
+  const messagesStore = useMessagesStore();
+
   const chats = ref<Array<ChatResponse>>([]);
   const loading = ref(false);
 
@@ -17,9 +19,23 @@ export const useChatsStore = defineStore("chats", () => {
     }
   };
 
+  const getMessagesByChatId = async (id: number) => {
+    loading.value = true;
+    try {
+      const response = await chatApi.getMessages(id);
+      messagesStore.messages = response;
+      return response;
+    } catch (error) {
+      console.error("Failed to fetch messages by chat ID:", error);
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     chats,
     loading,
     getAllChats,
+    getMessagesByChatId,
   };
 });

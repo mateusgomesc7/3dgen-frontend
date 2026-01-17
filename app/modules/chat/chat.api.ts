@@ -7,11 +7,11 @@ export const chatApi = {
     return api("/chats/", { method: "GET" });
   },
 
-  getById(id: string): Promise<ChatResponse> {
+  getById(id: number): Promise<ChatResponse> {
     return api(`/chats/${id}`);
   },
 
-  getMessages(chatId: string): Promise<MessageResponse[]> {
+  getMessages(chatId: number): Promise<MessageResponse[]> {
     return api(`/chats/${chatId}/messages`, { method: "GET" });
   },
 
@@ -19,11 +19,11 @@ export const chatApi = {
     return api("/chats/", { method: "POST", body: data });
   },
 
-  update(id: string, data: ChatPayload): Promise<ChatResponse> {
+  update(id: number, data: ChatPayload): Promise<ChatResponse> {
     return api(`/chats/${id}`, { method: "PUT", body: data });
   },
 
-  delete(id: string, data: ChatPayload): Promise<ChatResponse> {
+  delete(id: number, data: ChatPayload): Promise<ChatResponse> {
     return api(`/chats/${id}`, { method: "DELETE", body: data });
   },
 };

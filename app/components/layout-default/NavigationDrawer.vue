@@ -66,11 +66,11 @@
       <div class="mx-4 mt-4 font-weight-bold">Chats</div>
       <v-list density="compact" nav>
         <v-list-item
-          v-for="n in chatsStore.chats.length"
-          :key="n"
-          :title="`Chat ${n}`"
-          :value="`chat-${n}`"
-          @click.stop
+          v-for="chat in chatsStore.chats"
+          :key="chat.id"
+          :title="`Chat ${chat.id}`"
+          :value="`chat-${chat.id}`"
+          @click.stop="openChat(chat.id)"
         ></v-list-item>
       </v-list>
     </div>
@@ -83,12 +83,16 @@ const chatsStore = useChatsStore();
 const drawer = ref(true);
 const rail = ref(true);
 
+const openChat = async (chatId: number) => {
+  await chatsStore.getMessagesByChatId(chatId);
+};
+
 watch(
   () => rail.value,
   async (newValue) => {
     if (!newValue) await chatsStore.getAllChats();
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 

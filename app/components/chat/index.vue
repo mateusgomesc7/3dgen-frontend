@@ -4,7 +4,7 @@
     class="chat-container px-8 d-flex flex-column align-center"
   >
     <div
-      v-if="chatStarted"
+      v-if="hasMessages"
       v-for="message in messagesStore.messages"
       :key="message.id"
       class="w-100 mb-8"
@@ -18,7 +18,7 @@
 
     <div ref="bottomEl" />
 
-    <h2 v-if="!chatStarted" class="text-h4 mb-8">
+    <h2 v-if="!hasMessages" class="text-h4 mb-8">
       What do you want to generate?
     </h2>
 
@@ -38,7 +38,6 @@ const messagesStore = useMessagesStore();
 
 const messagesContainer = ref<HTMLElement | null>(null);
 const bottomEl = ref<HTMLElement | null>(null);
-const chatStarted = ref(false);
 
 onMounted(() => {
   if (messagesContainer.value) {
@@ -47,7 +46,6 @@ onMounted(() => {
 });
 
 const handleSendMessage = async (text: string) => {
-  chatStarted.value = true;
   await addMessage({
     chat_id: 1,
     role: "user",
@@ -62,6 +60,10 @@ const observer = new ResizeObserver(() => {
 const addMessage = async (data: MessagePayload) => {
   await messagesStore.addMessage(data);
 };
+
+const hasMessages = computed(() => {
+  return messagesStore.messages.length > 0;
+});
 </script>
 
 <style scoped>
