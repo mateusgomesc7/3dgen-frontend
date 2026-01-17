@@ -22,7 +22,12 @@
                 >
                   <v-icon size="25" class="rotate-90">mdi-window-closed</v-icon>
                 </v-btn>
-                <v-btn v-show="!isHovering || !rail" variant="text" size="32">
+                <v-btn
+                  v-show="!isHovering || !rail"
+                  variant="text"
+                  size="32"
+                  @click.stop="!rail ? openNewChat() : null"
+                >
                   <v-icon size="27">mdi-cube-outline</v-icon>
                 </v-btn>
               </div>
@@ -45,7 +50,7 @@
 
     <v-divider></v-divider>
 
-    <v-list density="compact" nav>
+    <v-list v-model:selected="menuSelected" density="compact" nav>
       <v-list-item
         prepend-icon="mdi-square-edit-outline"
         title="New chat"
@@ -64,7 +69,7 @@
 
     <div v-if="!rail">
       <div class="mx-4 mt-4 font-weight-bold">Chats</div>
-      <v-list density="compact" nav>
+      <v-list v-model:selected="chatSelected" density="compact" nav>
         <v-list-item
           v-for="chat in chatsStore.chats"
           :key="chat.id"
@@ -83,12 +88,31 @@ const chatsStore = useChatsStore();
 const drawer = ref(true);
 const rail = ref(true);
 
+const menuSelected = shallowRef<string[]>([]);
+const chatSelected = shallowRef<string[]>([]);
+
+onMounted(async () => {
+  if (chatsStore.currentChat === null) {
+    menuSelected.value = ["new-chat"];
+  }
+});
+
 const openChat = async (chatId: number) => {
-  await chatsStore.getMessagesByChatId(chatId);
+  if (chatsStore.currentChat?.id !== chatId) {
+    await chatsStore.getMessagesByChatId(chatId);
+  }
+
+  await nextTick();
+  menuSelected.value = [];
+  chatSelected.value = [`chat-${chatId}`];
 };
 
-const openNewChat = () => {
+const openNewChat = async () => {
   chatsStore.clearCurrentChat();
+
+  await nextTick();
+  menuSelected.value = ["new-chat"];
+  chatSelected.value = [];
 };
 
 watch(
@@ -97,6 +121,16 @@ watch(
     if (!newValue) await chatsStore.getAllChats();
   },
   { immediate: true },
+);
+
+watch(
+  () => chatsStore.currentChat,
+  async (newValue) => {
+    if (newValue !== null) {
+      menuSelected.value = [];
+      chatSelected.value = [`chat-${newValue.id}`];
+    }
+  },
 );
 </script>
 

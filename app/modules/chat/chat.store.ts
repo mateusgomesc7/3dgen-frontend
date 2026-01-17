@@ -31,6 +31,7 @@ export const useChatsStore = defineStore("chats", () => {
     loading.value = true;
     try {
       const response = await chatApi.getMessages(id);
+      currentChat.value = chats.value.find((chat) => chat.id === id) || null;
       messagesStore.messages = response;
       return response;
     } catch (error) {
