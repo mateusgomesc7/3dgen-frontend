@@ -50,7 +50,7 @@
         prepend-icon="mdi-square-edit-outline"
         title="New chat"
         value="new-chat"
-        @click.stop
+        @click.stop="openNewChat"
       ></v-list-item>
       <v-list-item
         prepend-icon="mdi-image-multiple-outline"
@@ -85,6 +85,10 @@ const rail = ref(true);
 
 const openChat = async (chatId: number) => {
   await chatsStore.getMessagesByChatId(chatId);
+};
+
+const openNewChat = () => {
+  chatsStore.clearCurrentChat();
 };
 
 watch(

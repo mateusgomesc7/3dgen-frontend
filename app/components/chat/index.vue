@@ -35,6 +35,7 @@ import ReceivedMessage from "./ReceivedMessage.vue";
 import type { MessagePayload } from "~/modules/message/message.types";
 
 const messagesStore = useMessagesStore();
+const chatsStore = useChatsStore();
 
 const messagesContainer = ref<HTMLElement | null>(null);
 const bottomEl = ref<HTMLElement | null>(null);
@@ -46,8 +47,14 @@ onMounted(() => {
 });
 
 const handleSendMessage = async (text: string) => {
+  if (chatsStore.currentChat === null) {
+    await chatsStore.createChat();
+  }
+
+  if (chatsStore.currentChat === null) return;
+
   await addMessage({
-    chat_id: 1,
+    chat_id: chatsStore.currentChat.id,
     role: "user",
     content: text,
   });

@@ -3,9 +3,17 @@ import type { ChatResponse } from "./chat.types";
 
 export const useChatsStore = defineStore("chats", () => {
   const messagesStore = useMessagesStore();
+  const usersStore = useUsersStore();
+  const assistantsStore = useAssistantsStore();
 
   const chats = ref<Array<ChatResponse>>([]);
+  const currentChat = ref<ChatResponse | null>(null);
   const loading = ref(false);
+
+  const clearCurrentChat = () => {
+    currentChat.value = null;
+    messagesStore.messages = [];
+  };
 
   const getAllChats = async () => {
     loading.value = true;
@@ -32,10 +40,32 @@ export const useChatsStore = defineStore("chats", () => {
     }
   };
 
+  const createChat = async (): Promise<ChatResponse> => {
+    loading.value = true;
+    try {
+      const paylod = {
+        user_id: usersStore.currentUser?.id!,
+        assistant_id: assistantsStore.currentAssistant?.id!,
+      };
+      const newChat = await chatApi.create(paylod);
+      currentChat.value = newChat;
+      chats.value.unshift(newChat);
+      return newChat;
+    } catch (error) {
+      console.error("Failed to create chat:", error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     chats,
+    currentChat,
     loading,
+    clearCurrentChat,
     getAllChats,
     getMessagesByChatId,
+    createChat,
   };
 });
