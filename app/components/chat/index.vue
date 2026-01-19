@@ -9,11 +9,7 @@
       :key="message.id"
       class="w-100 mb-8"
     >
-      <SentMessage v-if="message.role === 'user'" :text="message.content" />
-      <ReceivedMessage
-        v-if="message.role === 'assistant'"
-        :text="message.content"
-      />
+      <MarkdownMessage :text="message.content" :role="message.role" />
     </div>
 
     <div ref="bottomEl" />
@@ -30,8 +26,7 @@
 
 <script setup lang="ts">
 import ChatInput from "./ChatInput.vue";
-import SentMessage from "./SentMessage.vue";
-import ReceivedMessage from "./ReceivedMessage.vue";
+import MarkdownMessage from "./MarkdownMessage.vue";
 import type { MessagePayload } from "~/modules/message/message.types";
 
 const messagesStore = useMessagesStore();
