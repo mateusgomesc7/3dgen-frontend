@@ -4,7 +4,7 @@
     :class="props.role === 'assistant' ? 'justify-start' : 'justify-end'"
   >
     <div
-      class="bg-grey-darken-3 pa-8 mb-4 rounded-xl markdown"
+      class="bg-grey-darken-3 px-8 pt-8 pb-4 mb-4 rounded-xl markdown"
       v-html="rendered"
     />
   </div>
