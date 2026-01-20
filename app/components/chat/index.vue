@@ -10,6 +10,10 @@
       class="w-100 mb-8"
     >
       <MarkdownMessage :text="message.content" :role="message.role" />
+      <ThreeSandbox
+        v-if="message.role === 'assistant'"
+        :code="message.content"
+      />
     </div>
 
     <div ref="bottomEl" />
@@ -27,6 +31,7 @@
 <script setup lang="ts">
 import ChatInput from "./ChatInput.vue";
 import MarkdownMessage from "./MarkdownMessage.vue";
+import ThreeSandbox from "./ThreeSandbox.vue";
 import type { MessagePayload } from "~/modules/message/message.types";
 
 const messagesStore = useMessagesStore();
