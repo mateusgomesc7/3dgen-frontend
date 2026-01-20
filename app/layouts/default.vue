@@ -4,7 +4,7 @@
 
     <TopBar />
 
-    <v-main class="main-content">
+    <v-main>
       <slot />
     </v-main>
   </v-layout>
@@ -28,9 +28,3 @@ const Child = {
   },
 };
 </script>
-
-<style scoped>
-.main-content {
-  --v-layout-top: 0px !important;
-}
-</style>
