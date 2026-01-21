@@ -13,6 +13,7 @@
       <ThreeSandbox
         v-if="message.role === 'assistant'"
         :code="message.content"
+        :sandbox-id="message.id"
       />
     </div>
 

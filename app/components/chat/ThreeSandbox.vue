@@ -1,5 +1,5 @@
 <template>
-  <div class="three-sandbox">
+  <div :id="`sandbox-${props.sandboxId}`" class="three-sandbox">
     <iframe
       ref="iframeRef"
       class="sandbox-frame"
@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
 
 const props = defineProps({
@@ -16,41 +16,90 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  sandboxId: {
+    type: [String, Number],
+    required: true,
+  },
 });
 
-const iframeRef = ref(null);
+const iframeRef = ref<HTMLIFrameElement | null>(null);
 
-const buildHtml = (jsCode) =>
+const buildHtml = (jsCode: string, sandboxId: string | number) =>
   `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8" />
-    <style>
-        html, body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-        }
-    </style>
-    </head>
-    <body>
-        <script type="module">
-        ${jsCode}
-        <\/script>
-    </body>
-    </html>`;
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    #error-overlay {
+      position: fixed;
+      inset: 0;
+      background: #1e1e1e;
+      color: #ff6b6b;
+      font-family: monospace;
+      padding: 12px;
+      white-space: pre-wrap;
+      display: none;
+    }
+  </style>
+  </head>
+  <body>
+
+  <div id="error-overlay"></div>
+
+  <script type="module">
+    const SANDBOX_ID = "${sandboxId}";
+
+    const sendError = (err) => {
+      window.parent.postMessage(
+        {
+          type: "iframe-error",
+          sandboxId: SANDBOX_ID,
+          message: err?.message || String(err),
+          stack: err?.stack || null,
+        },
+        "*"
+      );
+
+      const overlay = document.getElementById('error-overlay');
+      overlay.style.display = 'block';
+      overlay.textContent =
+        'Runtime Error:\\n\\n' +
+        (err.stack || err.message || err);
+    };
+
+    window.addEventListener('error', (event) => {
+      sendError(event.error || event.message);
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      sendError(event.reason);
+    });
+
+  ${jsCode}
+  <\/script>
+
+  </body>
+  </html>`;
 
 const render = () => {
   if (!iframeRef.value) return;
 
-  iframeRef.value.srcdoc = buildHtml(props.code);
+  iframeRef.value.srcdoc = buildHtml(props.code, props.sandboxId);
 };
 
-watch(() => props.code, render);
+onMounted(() => {
+  render();
+});
 
-onMounted(render);
+watch(() => props.code, render);
 </script>
 
 <style scoped>
