@@ -1,5 +1,13 @@
 <template>
   <div :id="`sandbox-${props.sandboxId}`" class="three-sandbox">
+    <v-btn
+      icon="mdi-code-json"
+      color="grey-darken-3"
+      class="sandbox-btn"
+      @click="emits('open-code')"
+    >
+    </v-btn>
+
     <iframe
       ref="iframeRef"
       class="sandbox-frame"
@@ -21,6 +29,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const emits = defineEmits<{ (e: "open-code"): void }>();
 
 const iframeRef = ref<HTMLIFrameElement | null>(null);
 
@@ -104,6 +114,7 @@ watch(() => props.code, render);
 
 <style scoped>
 .three-sandbox {
+  position: relative;
   width: 100%;
   height: 500px;
   border-radius: 12px;
@@ -115,5 +126,13 @@ watch(() => props.code, render);
   width: 100%;
   height: 100%;
   border: none;
+}
+
+.sandbox-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  border-radius: 8px;
 }
 </style>

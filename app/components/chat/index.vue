@@ -9,11 +9,19 @@
       :key="message.id"
       class="w-100 mb-8"
     >
-      <MarkdownMessage :text="message.content" :role="message.role" />
+      <MarkdownMessage
+        v-if="openCodes[message.id] || message.role === 'user'"
+        :text="message.content"
+        :role="message.role"
+      />
       <ThreeSandbox
         v-if="message.role === 'assistant'"
         :code="message.content"
         :sandbox-id="message.id"
+        @open-code="
+          shouldAutoScroll = false;
+          openCodes[message.id] = !openCodes[message.id];
+        "
       />
     </div>
 
@@ -38,8 +46,10 @@ import type { MessagePayload } from "~/modules/message/message.types";
 const messagesStore = useMessagesStore();
 const chatsStore = useChatsStore();
 
+const shouldAutoScroll = ref(true);
 const messagesContainer = ref<HTMLElement | null>(null);
 const bottomEl = ref<HTMLElement | null>(null);
+const openCodes = reactive<Record<number, boolean>>({});
 
 onMounted(() => {
   if (messagesContainer.value) {
@@ -48,6 +58,8 @@ onMounted(() => {
 });
 
 const handleSendMessage = async (text: string) => {
+  shouldAutoScroll.value = true;
+
   if (chatsStore.currentChat === null) {
     await chatsStore.createChat();
   }
@@ -62,6 +74,8 @@ const handleSendMessage = async (text: string) => {
 };
 
 const observer = new ResizeObserver(() => {
+  if (!shouldAutoScroll.value) return;
+
   bottomEl.value?.scrollIntoView({ block: "end", behavior: "smooth" });
 });
 
