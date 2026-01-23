@@ -1,5 +1,5 @@
 <template>
-  <div :id="`sandbox-${props.sandboxId}`" class="three-sandbox">
+  <div :id="`sandbox-${props.sandboxId}`" class="three-sandbox mx-auto">
     <v-btn
       icon="mdi-code-json"
       color="grey-darken-3"
@@ -115,7 +115,7 @@ watch(() => props.code, render);
 <style scoped>
 .three-sandbox {
   position: relative;
-  width: 100%;
+  width: 776px;
   height: 500px;
   border-radius: 12px;
   overflow: hidden;
@@ -125,6 +125,7 @@ watch(() => props.code, render);
 .sandbox-frame {
   width: 100%;
   height: 100%;
+  min-width: 488px;
   border: none;
 }
 
@@ -132,7 +133,7 @@ watch(() => props.code, render);
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 10;
+  z-index: 5;
   border-radius: 8px;
 }
 </style>
