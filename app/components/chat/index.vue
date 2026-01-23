@@ -67,6 +67,7 @@ import type { MessagePayload } from "~/modules/message/message.types";
 
 const messagesStore = useMessagesStore();
 const chatsStore = useChatsStore();
+const router = useRouter();
 
 const shouldAutoScroll = ref(true);
 const messagesContainer = ref<HTMLElement | null>(null);
@@ -89,7 +90,11 @@ const handleSendMessage = async (text: string) => {
   shouldAutoScroll.value = true;
 
   if (chatsStore.currentChat === null) {
-    await chatsStore.createChat();
+    const response = await chatsStore.createChat();
+    if (!response) return;
+    router.replace({
+      query: { chatId: response.id.toString() },
+    });
   }
 
   if (chatsStore.currentChat === null) return;

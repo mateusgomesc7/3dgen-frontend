@@ -84,6 +84,7 @@
 
 <script setup lang="ts">
 const chatsStore = useChatsStore();
+const router = useRouter();
 
 const drawer = ref(true);
 const rail = ref(true);
@@ -105,6 +106,9 @@ const openChat = async (chatId: number) => {
   await nextTick();
   menuSelected.value = [];
   chatSelected.value = [`chat-${chatId}`];
+  router.replace({
+    query: { chatId: chatId.toString() },
+  });
 };
 
 const openNewChat = async () => {
