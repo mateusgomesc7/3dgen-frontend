@@ -35,7 +35,12 @@
           @after-leave="transitioning[message.id] = false"
         >
           <div v-show="openCodes[message.id]">
-            <MarkdownMessage :text="message.content" :role="message.role" />
+            <CodeEditorMessage
+              :model-value="draftContent[message.id] ?? message.content"
+              :role="message.role"
+              @update:modelValue="onEditorInput(message.id, $event)"
+              :loading="editorLoading[message.id]"
+            />
           </div>
         </v-expand-x-transition>
       </v-col>
@@ -57,6 +62,7 @@
 import ChatInput from "./ChatInput.vue";
 import MarkdownMessage from "./MarkdownMessage.vue";
 import ThreeSandbox from "./ThreeSandbox.vue";
+import CodeEditorMessage from "./CodeEditorMessage.vue";
 import type { MessagePayload } from "~/modules/message/message.types";
 
 const messagesStore = useMessagesStore();
@@ -67,6 +73,11 @@ const messagesContainer = ref<HTMLElement | null>(null);
 const bottomEl = ref<HTMLElement | null>(null);
 const openCodes = reactive<Record<number, boolean>>({});
 const transitioning = reactive<Record<number, boolean>>({});
+const draftContent = reactive<Record<number, string>>({});
+const debounceTimers = reactive<Record<number, ReturnType<typeof setTimeout>>>(
+  {},
+);
+const editorLoading = reactive<Record<number, boolean>>({});
 
 onMounted(() => {
   if (messagesContainer.value) {
@@ -98,6 +109,21 @@ const observer = new ResizeObserver(() => {
 
 const addMessage = async (data: MessagePayload) => {
   await messagesStore.addMessage(data);
+};
+
+const onEditorInput = (id: number, value: string) => {
+  draftContent[id] = value;
+  editorLoading[id] = true;
+
+  clearTimeout(debounceTimers[id]);
+  debounceTimers[id] = setTimeout(() => {
+    const msg = messagesStore.messages.find((m) => m.id === id);
+    if (msg) {
+      msg.content = value;
+    }
+
+    editorLoading[id] = false;
+  }, 800);
 };
 
 const hasMessages = computed(() => {

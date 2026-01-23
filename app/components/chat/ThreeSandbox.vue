@@ -118,6 +118,7 @@ watch(() => props.code, render);
   width: 776px;
   height: 500px;
   border-radius: 12px;
+  z-index: 3;
   overflow: hidden;
   border: 1px solid #333;
 }
