@@ -117,6 +117,7 @@ const openNewChat = async () => {
   await nextTick();
   menuSelected.value = ["new-chat"];
   chatSelected.value = [];
+  router.replace({ query: {} });
 };
 
 watch(

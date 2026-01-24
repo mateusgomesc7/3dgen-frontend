@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100 pt-8 d-flex justify-center align-center">
+  <div class="wrapper-chat h-100 d-flex justify-center align-center">
     <Chat />
   </div>
 </template>
@@ -18,3 +18,9 @@ watch(
   { immediate: true },
 );
 </script>
+
+<style scoped>
+.wrapper-chat {
+  padding-top: calc(var(--v-layout-top) + 28px);
+}
+</style>

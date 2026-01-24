@@ -9,6 +9,7 @@
     >
       <v-col
         v-if="message.role === 'user'"
+        class="mb-n8"
         :cols="hasAnyCodeOpened ? 9 : 12"
         :class="hasAnyCodeOpened ? 'pr-2' : ''"
       >
@@ -55,6 +56,8 @@
     <div class="chat-input-wrapper">
       <ChatInput @send-message="handleSendMessage" />
     </div>
+
+    <div v-if="!hasMessages" class="my-12"></div>
   </div>
 </template>
 

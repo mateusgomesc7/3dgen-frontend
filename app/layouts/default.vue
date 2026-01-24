@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="fill-height">
+  <v-layout>
     <NavigationDrawer />
 
     <TopBar />
@@ -11,20 +11,13 @@
 </template>
 
 <script setup lang="ts">
-import { useLayout } from "vuetify";
-import type { SetupContext } from "vue";
 import NavigationDrawer from "@/components/layout-default/NavigationDrawer.vue";
 import TopBar from "@/components/layout-default/TopBar.vue";
-
-const Child = {
-  setup(_props: unknown, ctx: SetupContext) {
-    const { getLayoutItem } = useLayout();
-
-    function print(key: string) {
-      alert(JSON.stringify(getLayoutItem(key), null, 2));
-    }
-
-    return () => (ctx.slots.default ? { print } : null);
-  },
-};
 </script>
+
+<style scoped>
+.v-main {
+  padding-left: var(--v-layout-left) !important;
+  padding-top: 0 !important;
+}
+</style>
