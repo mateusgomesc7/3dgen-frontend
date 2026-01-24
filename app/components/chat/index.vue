@@ -31,6 +31,7 @@
           :is-dirty="isDirty[message.id]"
           @open-code="openCode(message)"
           @cancel-code="cancelCode(message)"
+          @save-code="saveCode(message)"
         />
       </v-col>
 
@@ -148,6 +149,26 @@ const cancelCode = (message: MessageResponse) => {
   isDirty[message.id] = false;
   editorLoading[message.id] = false;
   openCodes[message.id] = false;
+};
+
+const saveCode = async (message: MessageResponse) => {
+  clearTimeout(debounceTimers[message.id]);
+
+  const newContent = draftContent[message.id] ?? message.content;
+
+  editorLoading[message.id] = true;
+
+  try {
+    await messagesStore.updateMessage(message.id, { content: newContent });
+
+    originalContent[message.id] = newContent;
+    isDirty[message.id] = false;
+  } catch (error) {
+    console.error("Error saving code:", error);
+  } finally {
+    editorLoading[message.id] = false;
+    openCodes[message.id] = false;
+  }
 };
 
 const onEditorInput = (id: number, value: string) => {

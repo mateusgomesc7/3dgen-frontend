@@ -17,9 +17,26 @@ export const useMessagesStore = defineStore("messages", () => {
     }
   };
 
+  const updateMessage = async (
+    messageId: number,
+    data: Partial<MessagePayload>,
+  ): Promise<MessageResponse | null> => {
+    loading.value = true;
+    try {
+      const response = await messageApi.update(messageId, data);
+      return response;
+    } catch (error) {
+      console.error("Failed to update message:", error);
+      return null;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     messages,
     loading,
     addMessage,
+    updateMessage,
   };
 });
