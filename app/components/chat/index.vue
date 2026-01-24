@@ -28,10 +28,9 @@
         <ThreeSandbox
           :code="message.content"
           :sandbox-id="message.id"
-          @open-code="
-            shouldAutoScroll = false;
-            openCodes[message.id] = !openCodes[message.id];
-          "
+          :is-dirty="isDirty[message.id]"
+          @open-code="openCode(message)"
+          @cancel-code="cancelCode(message)"
         />
       </v-col>
 
@@ -44,8 +43,8 @@
             <CodeEditorMessage
               :model-value="draftContent[message.id] ?? message.content"
               :role="message.role"
-              @update:modelValue="onEditorInput(message.id, $event)"
               :loading="editorLoading[message.id]"
+              @update:modelValue="onEditorInput(message.id, $event)"
             />
           </div>
         </v-expand-x-transition>
@@ -83,6 +82,8 @@ const bottomEl = ref<HTMLElement | null>(null);
 const openCodes = reactive<Record<number, boolean>>({});
 const transitioning = reactive<Record<number, boolean>>({});
 const draftContent = reactive<Record<number, string>>({});
+const originalContent = reactive<Record<number, string>>({});
+const isDirty = reactive<Record<number, boolean>>({});
 const debounceTimers = reactive<Record<number, ReturnType<typeof setTimeout>>>(
   {},
 );
@@ -92,6 +93,12 @@ onMounted(() => {
   if (messagesContainer.value) {
     observer.observe(messagesContainer.value);
   }
+});
+
+const observer = new ResizeObserver(() => {
+  if (!shouldAutoScroll.value) return;
+
+  bottomEl.value?.scrollIntoView({ block: "end", behavior: "smooth" });
 });
 
 const handleSendMessage = async (text: string) => {
@@ -112,14 +119,35 @@ const handleSendMessage = async (text: string) => {
   });
 };
 
-const observer = new ResizeObserver(() => {
-  if (!shouldAutoScroll.value) return;
-
-  bottomEl.value?.scrollIntoView({ block: "end", behavior: "smooth" });
-});
-
 const addMessage = async (data: MessagePayload) => {
   await messagesStore.addMessage(data);
+};
+
+const openCode = (message: MessageResponse) => {
+  shouldAutoScroll.value = false;
+  openCodes[message.id] = !openCodes[message.id];
+
+  if (originalContent[message.id] === undefined) {
+    originalContent[message.id] = message.content;
+    isDirty[message.id] = false;
+  }
+};
+
+const cancelCode = (message: MessageResponse) => {
+  clearTimeout(debounceTimers[message.id]);
+
+  const original = originalContent[message.id] ?? message.content;
+
+  draftContent[message.id] = original;
+
+  const msg = messagesStore.messages.find((m) => m.id === message.id);
+  if (msg) {
+    msg.content = original;
+  }
+
+  isDirty[message.id] = false;
+  editorLoading[message.id] = false;
+  openCodes[message.id] = false;
 };
 
 const onEditorInput = (id: number, value: string) => {
@@ -128,6 +156,8 @@ const onEditorInput = (id: number, value: string) => {
 
   clearTimeout(debounceTimers[id]);
   debounceTimers[id] = setTimeout(() => {
+    isDirty[id] = value !== originalContent[id];
+
     const msg = messagesStore.messages.find((m) => m.id === id);
     if (msg) {
       msg.content = value;

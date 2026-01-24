@@ -3,10 +3,32 @@
     <v-btn
       icon="mdi-code-json"
       color="grey-darken-3"
-      class="sandbox-btn"
+      class="border-btn transparent-btn open-code-btn position-absolute"
       @click="emits('open-code')"
     >
     </v-btn>
+
+    <v-expand-x-transition>
+      <div
+        v-if="props.isDirty"
+        class="actions-btn position-absolute d-flex ga-2"
+      >
+        <v-btn
+          color="grey-darken-3"
+          class="transparent-btn"
+          @click="emits('cancel-code')"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          color="grey-darken-3"
+          class="transparent-btn"
+          @click="emits('save-code')"
+        >
+          Save
+        </v-btn>
+      </div>
+    </v-expand-x-transition>
 
     <iframe
       ref="iframeRef"
@@ -28,9 +50,17 @@ const props = defineProps({
     type: [String, Number],
     required: true,
   },
+  isDirty: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emits = defineEmits<{ (e: "open-code"): void }>();
+const emits = defineEmits<{
+  (e: "open-code"): void;
+  (e: "cancel-code"): void;
+  (e: "save-code"): void;
+}>();
 
 const iframeRef = ref<HTMLIFrameElement | null>(null);
 
@@ -144,21 +174,29 @@ watch(() => props.code, render);
   border: none;
 }
 
-.sandbox-btn {
-  position: absolute;
+.open-code-btn {
   top: 8px;
   right: 8px;
-  z-index: 5;
-  border-radius: 8px;
+}
 
+.actions-btn {
+  bottom: 8px;
+  right: 8px;
+}
+
+.border-btn {
+  border-radius: 8px;
+}
+
+.transparent-btn {
   opacity: 0.45;
   transition:
     opacity 0.2s ease,
     background-color 0.2s ease;
 }
 
-.sandbox-btn:hover,
-.sandbox-btn:focus-visible {
+.transparent-btn:hover,
+.transparent-btn:focus-visible {
   opacity: 1;
 }
 </style>
