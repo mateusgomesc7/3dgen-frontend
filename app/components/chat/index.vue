@@ -22,7 +22,7 @@
       </v-col>
 
       <v-col
-        v-if="message.role === 'assistant'"
+        v-if="message.role === 'assistant' && message.id"
         :cols="openCodes[message.id] || transitioning[message.id] ? 6 : 12"
       >
         <ThreeSandbox
@@ -35,7 +35,7 @@
         />
       </v-col>
 
-      <v-col cols="6" v-if="message.role === 'assistant'">
+      <v-col cols="6" v-if="message.role === 'assistant' && message.id">
         <v-expand-x-transition
           @before-enter="transitioning[message.id] = true"
           @after-leave="transitioning[message.id] = false"
@@ -51,6 +51,12 @@
         </v-expand-x-transition>
       </v-col>
     </v-row>
+
+    <v-skeleton-loader
+      v-if="messagesStore.loadingSendMessage"
+      type="image"
+      width="775"
+    ></v-skeleton-loader>
 
     <div ref="bottomEl" />
 
@@ -113,18 +119,20 @@ const handleSendMessage = async (text: string) => {
 
   if (chatsStore.currentChat === null) return;
 
-  await addMessage({
+  await sendMessage({
     chat_id: chatsStore.currentChat.id,
     role: "user",
     content: text,
   });
 };
 
-const addMessage = async (data: MessagePayload) => {
-  await messagesStore.addMessage(data);
+const sendMessage = async (data: MessagePayload) => {
+  await messagesStore.sendMessage(data);
 };
 
-const openCode = (message: MessageResponse) => {
+const openCode = (message: MessageChat) => {
+  if (!message.id) return;
+
   shouldAutoScroll.value = false;
   openCodes[message.id] = !openCodes[message.id];
 
@@ -134,7 +142,9 @@ const openCode = (message: MessageResponse) => {
   }
 };
 
-const cancelCode = (message: MessageResponse) => {
+const cancelCode = (message: MessageChat) => {
+  if (!message.id) return;
+
   clearTimeout(debounceTimers[message.id]);
 
   const original = originalContent[message.id] ?? message.content;
@@ -151,7 +161,9 @@ const cancelCode = (message: MessageResponse) => {
   openCodes[message.id] = false;
 };
 
-const saveCode = async (message: MessageResponse) => {
+const saveCode = async (message: MessageChat) => {
+  if (!message.id) return;
+
   clearTimeout(debounceTimers[message.id]);
 
   const newContent = draftContent[message.id] ?? message.content;
@@ -212,5 +224,11 @@ const hasAnyCodeOpened = computed(() => {
   padding-bottom: 10px;
   border-radius: 30px 30px 0 0;
   justify-items: center;
+}
+
+:deep(.v-skeleton-loader__image) {
+  border-radius: 8px;
+  height: 498px;
+  margin-bottom: 32px;
 }
 </style>

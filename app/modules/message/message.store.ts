@@ -1,19 +1,25 @@
 import { messageApi } from "./message.api";
-import type { MessagePayload, MessageResponse } from "./message.types";
+import type {
+  MessagePayload,
+  MessageResponse,
+  MessageChat,
+} from "./message.types";
 
 export const useMessagesStore = defineStore("messages", () => {
-  const messages = ref<Array<MessageResponse>>([]);
+  const messages = ref<Array<MessageChat>>([]);
   const loading = ref(false);
+  const loadingSendMessage = ref(false);
 
-  const addMessage = async (data: MessagePayload) => {
-    loading.value = true;
+  const sendMessage = async (data: MessageChat) => {
+    loadingSendMessage.value = true;
     try {
+      messages.value.push(data);
       const response = await messageApi.create(data);
-      messages.value.push(...response);
+      messages.value.push(response);
     } catch (error) {
       console.error("Failed to create message:", error);
     } finally {
-      loading.value = false;
+      loadingSendMessage.value = false;
     }
   };
 
@@ -36,7 +42,8 @@ export const useMessagesStore = defineStore("messages", () => {
   return {
     messages,
     loading,
-    addMessage,
+    loadingSendMessage,
+    sendMessage,
     updateMessage,
   };
 });

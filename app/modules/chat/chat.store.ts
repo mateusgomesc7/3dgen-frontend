@@ -8,6 +8,7 @@ export const useChatsStore = defineStore("chats", () => {
 
   const chats = ref<Array<ChatResponse>>([]);
   const currentChat = ref<ChatCurrent | null>(null);
+  const chatJustCreated = ref(false);
   const loading = ref(false);
 
   const clearCurrentChat = () => {
@@ -46,6 +47,8 @@ export const useChatsStore = defineStore("chats", () => {
 
   const createChat = async (): Promise<ChatResponse> => {
     loading.value = true;
+    chatJustCreated.value = true;
+
     try {
       const payload = {
         user_id: usersStore.currentUser?.id!,
@@ -56,6 +59,7 @@ export const useChatsStore = defineStore("chats", () => {
       chats.value.unshift(newChat);
       return newChat;
     } catch (error) {
+      chatJustCreated.value = false;
       console.error("Failed to create chat:", error);
       throw error;
     } finally {
@@ -66,6 +70,7 @@ export const useChatsStore = defineStore("chats", () => {
   return {
     chats,
     currentChat,
+    chatJustCreated,
     loading,
     clearCurrentChat,
     getAllChats,

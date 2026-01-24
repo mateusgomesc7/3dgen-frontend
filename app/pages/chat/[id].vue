@@ -10,7 +10,10 @@ const route = useRoute();
 const chatsStore = useChatsStore();
 
 onMounted(() => {
-  chatsStore.clearCurrentChat();
+  if (!chatsStore.chatJustCreated) {
+    chatsStore.clearCurrentChat();
+  }
+  chatsStore.chatJustCreated = false;
 });
 
 const loadChat = async () => {
@@ -28,7 +31,14 @@ const loadChat = async () => {
 
 const chatId = computed(() => Number(route.params.id));
 
-watch(chatId, loadChat, { immediate: true });
+watch(
+  chatId,
+  () => {
+    if (chatsStore.chatJustCreated) return;
+    loadChat();
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped>
