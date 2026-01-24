@@ -27,7 +27,9 @@ export const useChatsStore = defineStore("chats", () => {
     }
   };
 
-  const getMessagesByChatId = async (id: number) => {
+  const getMessagesByChatId = async (
+    id: number,
+  ): Promise<MessageResponse[]> => {
     loading.value = true;
     try {
       const response = await chatApi.getMessages(id);
@@ -36,6 +38,7 @@ export const useChatsStore = defineStore("chats", () => {
       return response;
     } catch (error) {
       console.error("Failed to fetch messages by chat ID:", error);
+      throw error;
     } finally {
       loading.value = false;
     }
@@ -44,11 +47,11 @@ export const useChatsStore = defineStore("chats", () => {
   const createChat = async (): Promise<ChatResponse> => {
     loading.value = true;
     try {
-      const paylod = {
+      const payload = {
         user_id: usersStore.currentUser?.id!,
         assistant_id: assistantsStore.currentAssistant?.id!,
       };
-      const newChat = await chatApi.create(paylod);
+      const newChat = await chatApi.create(payload);
       currentChat.value = newChat;
       chats.value.unshift(newChat);
       return newChat;

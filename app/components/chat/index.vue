@@ -100,9 +100,7 @@ const handleSendMessage = async (text: string) => {
   if (chatsStore.currentChat === null) {
     const response = await chatsStore.createChat();
     if (!response) return;
-    router.replace({
-      query: { chatId: response.id.toString() },
-    });
+    router.replace(`/chat/${response.id}`);
   }
 
   if (chatsStore.currentChat === null) return;

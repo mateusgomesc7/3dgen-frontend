@@ -103,25 +103,15 @@ const menuSelected = shallowRef<string[]>([]);
 const chatSelected = shallowRef<string[]>([]);
 
 const openChat = async (chatId: number) => {
-  if (chatsStore.currentChat?.id !== chatId) {
-    await chatsStore.getMessagesByChatId(chatId);
-  }
-
-  await nextTick();
   menuSelected.value = [];
   chatSelected.value = [`chat-${chatId}`];
-  router.replace({
-    query: { chatId: chatId.toString() },
-  });
+  router.replace(`/chat/${chatId}`);
 };
 
 const openNewChat = async () => {
-  chatsStore.clearCurrentChat();
-
-  await nextTick();
   menuSelected.value = ["new-chat"];
   chatSelected.value = [];
-  router.replace({ query: {} });
+  router.replace("/");
 };
 
 watch(
