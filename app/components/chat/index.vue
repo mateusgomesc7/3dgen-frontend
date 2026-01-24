@@ -1,5 +1,9 @@
 <template>
-  <div ref="messagesContainer" class="px-8 d-flex flex-column align-center">
+  <div
+    ref="messagesContainer"
+    class="px-8 d-flex flex-column align-center"
+    :class="{ 'h-100': hasMessages }"
+  >
     <v-row
       v-if="hasMessages"
       v-for="message in messagesStore.messages"
@@ -9,6 +13,7 @@
     >
       <v-col
         v-if="message.role === 'user'"
+        align-self="end"
         class="mb-n8"
         :cols="hasAnyCodeOpened ? 9 : 12"
         :class="hasAnyCodeOpened ? 'pr-2' : ''"
