@@ -2,10 +2,10 @@
   <v-navigation-drawer
     app
     v-model="drawer"
-    :rail="rail"
-    :class="{ 'cursor-ew-resize': rail }"
+    :rail="configurationsStore.railNavigation"
+    :class="{ 'cursor-ew-resize': configurationsStore.railNavigation }"
     permanent
-    @click="rail = false"
+    @click="configurationsStore.setRailNavigation(false)"
   >
     <v-list>
       <v-list-item>
@@ -14,19 +14,25 @@
             <template v-slot:default="{ isHovering, props }">
               <div v-bind="props">
                 <v-btn
-                  v-show="isHovering && rail"
+                  v-show="isHovering && configurationsStore.railNavigation"
                   variant="text"
                   class="cursor-ew-resize"
-                  @click.stop="rail = !rail"
+                  @click.stop="
+                    configurationsStore.setRailNavigation(
+                      !configurationsStore.railNavigation,
+                    )
+                  "
                   size="30"
                 >
                   <v-icon size="25" class="rotate-90">mdi-window-closed</v-icon>
                 </v-btn>
                 <v-btn
-                  v-show="!isHovering || !rail"
+                  v-show="!isHovering || !configurationsStore.railNavigation"
                   variant="text"
                   size="32"
-                  @click.stop="!rail ? openNewChat() : null"
+                  @click.stop="
+                    !configurationsStore.railNavigation ? openNewChat() : null
+                  "
                 >
                   <v-icon size="27">mdi-cube-outline</v-icon>
                 </v-btn>
@@ -39,7 +45,11 @@
           <v-btn
             variant="text"
             class="cursor-ew-resize"
-            @click.stop="rail = !rail"
+            @click.stop="
+              configurationsStore.setRailNavigation(
+                !configurationsStore.railNavigation,
+              )
+            "
             size="30"
           >
             <v-icon size="25" class="rotate-90">mdi-window-closed</v-icon>
@@ -65,9 +75,9 @@
       ></v-list-item>
     </v-list>
 
-    <v-divider v-if="!rail"></v-divider>
+    <v-divider v-if="!configurationsStore.railNavigation"></v-divider>
 
-    <div v-if="!rail">
+    <div v-if="!configurationsStore.railNavigation">
       <div class="mx-4 mt-4 font-weight-bold">Chats</div>
       <v-list v-model:selected="chatSelected" density="compact" nav>
         <v-list-item
@@ -83,20 +93,14 @@
 </template>
 
 <script setup lang="ts">
+const configurationsStore = useConfigurationsStore();
 const chatsStore = useChatsStore();
 const router = useRouter();
 
 const drawer = ref(true);
-const rail = ref(true);
 
 const menuSelected = shallowRef<string[]>([]);
 const chatSelected = shallowRef<string[]>([]);
-
-onMounted(async () => {
-  if (chatsStore.currentChat === null) {
-    menuSelected.value = ["new-chat"];
-  }
-});
 
 const openChat = async (chatId: number) => {
   if (chatsStore.currentChat?.id !== chatId) {
@@ -121,7 +125,7 @@ const openNewChat = async () => {
 };
 
 watch(
-  () => rail.value,
+  () => configurationsStore.railNavigation,
   async (newValue) => {
     if (!newValue) await chatsStore.getAllChats();
   },
@@ -134,8 +138,12 @@ watch(
     if (newValue !== null) {
       menuSelected.value = [];
       chatSelected.value = [`chat-${newValue.id}`];
+    } else {
+      menuSelected.value = ["new-chat"];
+      chatSelected.value = [];
     }
   },
+  { immediate: true },
 );
 </script>
 

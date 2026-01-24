@@ -1,5 +1,5 @@
 import { chatApi } from "./chat.api";
-import type { ChatResponse } from "./chat.types";
+import type { ChatResponse, ChatCurrent } from "./chat.types";
 
 export const useChatsStore = defineStore("chats", () => {
   const messagesStore = useMessagesStore();
@@ -7,7 +7,7 @@ export const useChatsStore = defineStore("chats", () => {
   const assistantsStore = useAssistantsStore();
 
   const chats = ref<Array<ChatResponse>>([]);
-  const currentChat = ref<ChatResponse | null>(null);
+  const currentChat = ref<ChatCurrent | null>(null);
   const loading = ref(false);
 
   const clearCurrentChat = () => {
@@ -31,7 +31,7 @@ export const useChatsStore = defineStore("chats", () => {
     loading.value = true;
     try {
       const response = await chatApi.getMessages(id);
-      currentChat.value = chats.value.find((chat) => chat.id === id) || null;
+      currentChat.value = { id };
       messagesStore.messages = response;
       return response;
     } catch (error) {
