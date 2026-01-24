@@ -67,31 +67,45 @@ const buildHtml = (jsCode: string, sandboxId: string | number) =>
   <script type="module">
     const SANDBOX_ID = "${sandboxId}";
 
-    const sendError = (err) => {
-      window.parent.postMessage(
-        {
-          type: "iframe-error",
-          sandboxId: SANDBOX_ID,
-          message: err?.message || String(err),
-          stack: err?.stack || null,
-        },
-        "*"
-      );
+    const overlay = document.getElementById("error-overlay");
 
-      const overlay = document.getElementById('error-overlay');
-      overlay.style.display = 'block';
-      overlay.textContent =
-        'Runtime Error:\\n\\n' +
-        (err.stack || err.message || err);
+    const show = (title, content) => {
+      overlay.style.display = "block";
+      overlay.textContent = title + "\\n\\n" + content;
     };
 
-    window.addEventListener('error', (event) => {
-      sendError(event.error || event.message);
+    window.addEventListener("error", (event) => {
+      show(
+        "Runtime Error",
+        event.error?.stack || event.message
+      );
     });
 
-    window.addEventListener('unhandledrejection', (event) => {
-      sendError(event.reason);
+    window.addEventListener("unhandledrejection", (event) => {
+      show(
+        "Unhandled Promise Rejection",
+        event.reason?.stack || String(event.reason)
+      );
     });
+
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    console.error = (...args) => {
+      originalError(...args); // mantém DevTools
+      show(
+        "Console Error",
+        args.map(a => String(a)).join(" ")
+      );
+    };
+
+    console.warn = (...args) => {
+      originalWarn(...args);
+      show(
+        "Console Warning",
+        args.map(a => String(a)).join(" ")
+      );
+    };
 
   ${jsCode}
   <\/script>
@@ -136,5 +150,15 @@ watch(() => props.code, render);
   right: 8px;
   z-index: 5;
   border-radius: 8px;
+
+  opacity: 0.45;
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.sandbox-btn:hover,
+.sandbox-btn:focus-visible {
+  opacity: 1;
 }
 </style>
