@@ -1,0 +1,82 @@
+<template>
+  <v-dialog v-model="show" max-width="450" persistent>
+    <template v-slot:activator="{ props: activatorProps }">
+      <div v-bind="activatorProps">
+        <slot name="activator"></slot>
+      </div>
+    </template>
+
+    <template v-slot:default="{ isActive }">
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div class="text-h5 px-2">
+            {{ editMode ? "Edit User" : "Create User" }}
+          </div>
+        </v-card-title>
+
+        <v-card-text class="pb-1">
+          <v-form ref="form" v-model="valid">
+            <v-text-field
+              label="Name"
+              v-model="userManipulated.name"
+              variant="outlined"
+              required
+              :rules="[(v) => !!v || 'Name is required']"
+            />
+          </v-form>
+        </v-card-text>
+
+        <v-card-actions class="d-flex justify-end px-6 pb-4">
+          <v-btn text @click="isActive.value = false"> Cancel </v-btn>
+          <v-btn
+            color="white"
+            text="Save"
+            variant="flat"
+            :disabled="disabledSave"
+            @click="emits('save')"
+          >
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </template>
+  </v-dialog>
+</template>
+
+<script setup lang="ts">
+const props = defineProps<{
+  user?: User | null;
+}>();
+
+const emits = defineEmits<{
+  (e: "save"): void;
+}>();
+
+const show = ref(false);
+const valid = ref<boolean>(false);
+
+const userManipulated = ref<User>({
+  name: "",
+});
+const editMode = computed(() => !!props.user);
+
+watch(
+  () => show.value,
+  () => {
+    if (props.user) {
+      userManipulated.value = { ...props.user };
+    } else {
+      userManipulated.value = {
+        name: "",
+      };
+    }
+  },
+  { immediate: true },
+);
+
+const disabledSave = computed(() => {
+  return (
+    !valid.value ||
+    (editMode.value && userManipulated.value?.name === props.user?.name)
+  );
+});
+</script>

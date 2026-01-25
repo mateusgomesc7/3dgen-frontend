@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col cols="12" class="d-flex ga-4 align-center">
-      <div>Current Model</div>
+      <div class="font-weight-bold">Current Model</div>
       <v-btn
         :disabled="props.loading"
         append-icon="mdi-open-in-new"

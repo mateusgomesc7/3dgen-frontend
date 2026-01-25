@@ -4,8 +4,7 @@ export interface UserPayload {
 }
 
 export interface User {
-  id: number;
-  email: string;
+  id?: number;
   name: string;
 }
 
