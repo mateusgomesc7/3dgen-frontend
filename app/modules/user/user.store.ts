@@ -1,3 +1,5 @@
+import { userApi } from "./user.api";
+
 export const useUsersStore = defineStore("users", () => {
   const currentUser = ref<User | null>(null);
 
@@ -8,7 +10,17 @@ export const useUsersStore = defineStore("users", () => {
     email: "john.doe@example.com",
   };
 
+  const getAllUsers = async (): Promise<User[]> => {
+    try {
+      return await userApi.getAll();
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+      return [];
+    }
+  };
+
   return {
     currentUser,
+    getAllUsers,
   };
 });

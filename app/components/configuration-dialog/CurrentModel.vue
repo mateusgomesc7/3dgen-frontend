@@ -24,7 +24,7 @@
       />
     </v-col>
 
-    <v-col cols="1" class="px-0 pt-4 d-flex justify-center">
+    <v-col cols="1" class="px-0 pt-5 d-flex justify-center">
       <v-btn :disabled="props.loading" size="small" icon="mdi-close"></v-btn>
     </v-col>
   </v-row>

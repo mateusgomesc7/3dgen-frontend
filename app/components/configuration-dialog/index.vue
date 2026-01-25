@@ -19,7 +19,7 @@
         <v-card-text>
           <CurrentModel :models="models" :loading="loadingModels" />
 
-          <CurrentUser />
+          <CurrentUser :users="users" :loading="loadingUsers" />
         </v-card-text>
       </v-card>
     </template>
@@ -31,10 +31,13 @@ import CurrentModel from "./CurrentModel.vue";
 import CurrentUser from "./CurrentUser.vue";
 
 const assistantsStore = useAssistantsStore();
+const usersStore = useUsersStore();
 
 const show = ref(false);
 const models = ref<Assistant[]>([]);
 const loadingModels = ref(false);
+const users = ref<User[]>([]);
+const loadingUsers = ref(false);
 
 const loadModels = async () => {
   loadingModels.value = true;
@@ -42,9 +45,15 @@ const loadModels = async () => {
   loadingModels.value = false;
 };
 
+const loadUsers = async () => {
+  loadingUsers.value = true;
+  users.value = await usersStore.getAllUsers();
+  loadingUsers.value = false;
+};
+
 watch(show, async (newVal) => {
-  if (newVal) {
-    await loadModels();
-  }
+  if (!newVal) return;
+
+  await Promise.all([loadModels(), loadUsers()]);
 });
 </script>
