@@ -1,5 +1,5 @@
 <template>
-  <v-dialog max-width="500">
+  <v-dialog v-model="show" max-width="500">
     <template v-slot:activator="{ props: activatorProps }">
       <v-btn v-bind="activatorProps" icon="mdi-cog"></v-btn>
     </template>
@@ -17,49 +17,9 @@
         </v-card-title>
 
         <v-card-text>
-          <v-row>
-            <v-col cols="12" class="d-flex ga-4 align-center">
-              <div>Current Model</div>
-              <v-btn
-                append-icon="mdi-open-in-new"
-                size="small"
-                color="white"
-                text="New"
-              ></v-btn>
-            </v-col>
+          <CurrentModel :models="models" :loading="loadingModels" />
 
-            <v-col cols="11">
-              <v-autocomplete
-                v-model="model"
-                :items="models"
-                variant="outlined"
-              ></v-autocomplete>
-            </v-col>
-
-            <v-col cols="1" class="px-0 pt-4 d-flex justify-center">
-              <v-btn size="small" icon="mdi-close"></v-btn>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="12" class="d-flex ga-4 align-center">
-              <div>Current User</div>
-              <v-btn size="small" color="white" text="New"></v-btn>
-            </v-col>
-
-            <v-col cols="10">
-              <v-autocomplete
-                v-model="user"
-                :items="users"
-                variant="outlined"
-              ></v-autocomplete>
-            </v-col>
-
-            <v-col cols="2" class="px-0 pt-4 d-flex justify-center">
-              <v-btn size="small" icon="mdi-pencil"></v-btn>
-              <v-btn size="small" icon="mdi-close"></v-btn>
-            </v-col>
-          </v-row>
+          <CurrentUser />
         </v-card-text>
       </v-card>
     </template>
@@ -67,16 +27,24 @@
 </template>
 
 <script setup lang="ts">
-const models = ref([
-  "gemma3:latest",
-  "gemma3:fast",
-  "gemma2:latest",
-  "gemma2:fast",
-  "stable-diffusion:latest",
-  "stable-diffusion:fast",
-]);
-const users = ref(["Mateus", "João", "Maria", "Ana"]);
+import CurrentModel from "./CurrentModel.vue";
+import CurrentUser from "./CurrentUser.vue";
 
-const model = ref(models.value[0]);
-const user = ref(users.value[0]);
+const assistantsStore = useAssistantsStore();
+
+const show = ref(false);
+const models = ref<Assistant[]>([]);
+const loadingModels = ref(false);
+
+const loadModels = async () => {
+  loadingModels.value = true;
+  models.value = await assistantsStore.getAllAssistants();
+  loadingModels.value = false;
+};
+
+watch(show, async (newVal) => {
+  if (newVal) {
+    await loadModels();
+  }
+});
 </script>
