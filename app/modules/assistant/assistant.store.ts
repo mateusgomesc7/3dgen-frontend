@@ -1,14 +1,15 @@
 import { assistantApi } from "./assistant.api";
 
 export const useAssistantsStore = defineStore("assistants", () => {
-  const currentAssistant = ref<Assistant | null>(null);
+  const currentAssistant = ref<Assistant | null>(
+    localStorage.getItem("3dgen_currentAssistant")
+      ? JSON.parse(localStorage.getItem("3dgen_currentAssistant") as string)
+      : null,
+  );
 
-  // Mock
-  currentAssistant.value = {
-    id: 1,
-    name: "Default Assistant",
-    provider: "OpenAI",
-    model: "gpt-4",
+  const setCurrentAssistant = (assistant: Assistant) => {
+    currentAssistant.value = assistant;
+    localStorage.setItem("3dgen_currentAssistant", JSON.stringify(assistant));
   };
 
   const getAllAssistants = async (): Promise<Assistant[]> => {
@@ -23,5 +24,6 @@ export const useAssistantsStore = defineStore("assistants", () => {
   return {
     currentAssistant,
     getAllAssistants,
+    setCurrentAssistant,
   };
 });

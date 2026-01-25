@@ -1,13 +1,15 @@
 import { userApi } from "./user.api";
 
 export const useUsersStore = defineStore("users", () => {
-  const currentUser = ref<User | null>(null);
+  const currentUser = ref<User | null>(
+    localStorage.getItem("3dgen_currentUser")
+      ? JSON.parse(localStorage.getItem("3dgen_currentUser") as string)
+      : null,
+  );
 
-  // Mock
-  currentUser.value = {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
+  const setCurrentUser = (user: User) => {
+    currentUser.value = user;
+    localStorage.setItem("3dgen_currentUser", JSON.stringify(user));
   };
 
   const getAllUsers = async (): Promise<User[]> => {
@@ -22,5 +24,6 @@ export const useUsersStore = defineStore("users", () => {
   return {
     currentUser,
     getAllUsers,
+    setCurrentUser,
   };
 });

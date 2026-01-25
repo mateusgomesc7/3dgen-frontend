@@ -13,7 +13,7 @@
 
     <v-col cols="11">
       <v-autocomplete
-        v-model="model"
+        :model-value="assistantsStore.currentAssistant"
         :items="props.models"
         :loading="props.loading"
         :disabled="props.loading"
@@ -21,11 +21,16 @@
         item-title="name"
         item-value="id"
         return-object
+        @update:model-value="(val) => assistantsStore.setCurrentAssistant(val)"
       />
     </v-col>
 
     <v-col cols="1" class="px-0 pt-5 d-flex justify-center">
-      <v-btn :disabled="props.loading" size="small" icon="mdi-close"></v-btn>
+      <v-btn
+        :disabled="props.loading"
+        size="small"
+        icon="mdi-trash-can"
+      ></v-btn>
     </v-col>
   </v-row>
 </template>
@@ -36,5 +41,5 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
-const model = ref<Assistant>();
+const assistantsStore = useAssistantsStore();
 </script>
