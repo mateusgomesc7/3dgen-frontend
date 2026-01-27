@@ -1,0 +1,54 @@
+<template>
+  <v-dialog v-model="show" max-width="450" persistent>
+    <template v-slot:activator="{ props: activatorProps }">
+      <div v-bind="activatorProps">
+        <slot name="activator"></slot>
+      </div>
+    </template>
+
+    <template v-slot:default="{ isActive }">
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div class="text-h5 px-2">
+            {{ title }}
+          </div>
+        </v-card-title>
+
+        <v-card-text class="pb-5">
+          <div class="text-subtitle-1">
+            {{ confirmText || "Are you sure you want to proceed?" }}
+          </div>
+        </v-card-text>
+
+        <v-card-actions class="d-flex justify-end px-6 pb-4">
+          <v-btn text @click="isActive.value = false"> Cancel </v-btn>
+          <v-btn
+            color="white"
+            text="Confirm"
+            variant="flat"
+            @click="handleConfirmClick"
+          >
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </template>
+  </v-dialog>
+</template>
+
+<script setup lang="ts">
+const props = defineProps<{
+  title: string;
+  confirmText?: string;
+}>();
+
+const emits = defineEmits<{
+  (e: "confirm"): void;
+}>();
+
+const show = ref(false);
+
+const handleConfirmClick = () => {
+  emits("confirm");
+  show.value = false;
+};
+</script>

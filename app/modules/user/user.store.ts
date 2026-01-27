@@ -7,7 +7,7 @@ export const useUsersStore = defineStore("users", () => {
       : null,
   );
 
-  const setCurrentUser = (user: User) => {
+  const setCurrentUser = (user: User | null) => {
     currentUser.value = user;
     localStorage.setItem("3dgen_currentUser", JSON.stringify(user));
   };
@@ -46,11 +46,22 @@ export const useUsersStore = defineStore("users", () => {
     }
   };
 
+  const deleteUser = async (userId: number): Promise<boolean> => {
+    try {
+      await userApi.delete(userId);
+      return true;
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      return false;
+    }
+  };
+
   return {
     currentUser,
     getAllUsers,
     setCurrentUser,
     createUser,
     updateUser,
+    deleteUser,
   };
 });

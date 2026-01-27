@@ -41,17 +41,27 @@
           ></v-btn>
         </template>
       </MaintainUserDialog>
-      <v-btn
-        :disabled="props.loading || !usersStore.currentUser"
-        size="small"
-        icon="mdi-trash-can"
-      ></v-btn>
+
+      <ConfirmationDialog
+        title="Confirm Deletion"
+        confirmText="Are you sure you want to delete the current user?"
+        @confirm="deleteCurrentUser"
+      >
+        <template #activator>
+          <v-btn
+            :disabled="props.loading || !usersStore.currentUser"
+            size="small"
+            icon="mdi-trash-can"
+          ></v-btn>
+        </template>
+      </ConfirmationDialog>
     </v-col>
   </v-row>
 </template>
 
 <script setup lang="ts">
 import MaintainUserDialog from "./MaintainUserDialog.vue";
+import ConfirmationDialog from "@/components/common/ConfirmationDialog.vue";
 
 const props = defineProps<{
   users: User[];
@@ -70,6 +80,24 @@ const updateCurrentUser = (user: User) => {
     users.value[index] = user;
   }
   usersStore.setCurrentUser(user);
+};
+
+const deleteCurrentUser = async () => {
+  if (!usersStore.currentUser || !usersStore.currentUser.id) return;
+
+  const response = await usersStore.deleteUser(usersStore.currentUser.id);
+
+  if (!response) return;
+
+  users.value = users.value.filter((u) => u.id !== usersStore.currentUser?.id);
+  const nextUser = users.value.length > 0 ? users.value[0] : null;
+
+  if (nextUser) {
+    usersStore.setCurrentUser(nextUser);
+    return;
+  }
+
+  usersStore.setCurrentUser(null);
 };
 
 watch(
