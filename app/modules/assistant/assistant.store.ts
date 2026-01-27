@@ -7,7 +7,7 @@ export const useAssistantsStore = defineStore("assistants", () => {
       : null,
   );
 
-  const setCurrentAssistant = (assistant: Assistant) => {
+  const setCurrentAssistant = (assistant: Assistant | null) => {
     currentAssistant.value = assistant;
     localStorage.setItem("3dgen_currentAssistant", JSON.stringify(assistant));
   };
@@ -21,9 +21,20 @@ export const useAssistantsStore = defineStore("assistants", () => {
     }
   };
 
+  const deleteAssistant = async (assistantId: number): Promise<boolean> => {
+    try {
+      await assistantApi.delete(assistantId);
+      return true;
+    } catch (error) {
+      console.error("Failed to delete assistant:", error);
+      return false;
+    }
+  };
+
   return {
     currentAssistant,
     getAllAssistants,
     setCurrentAssistant,
+    deleteAssistant,
   };
 });

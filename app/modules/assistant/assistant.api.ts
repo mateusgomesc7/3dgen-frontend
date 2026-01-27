@@ -6,7 +6,7 @@ export const assistantApi = {
     return api("/assistants/", { method: "GET" });
   },
 
-  getById(id: string): Promise<AssistantResponse> {
+  getById(id: number): Promise<AssistantResponse> {
     return api(`/assistants/${id}`);
   },
 
@@ -14,11 +14,11 @@ export const assistantApi = {
     return api("/assistants/", { method: "POST", body: data });
   },
 
-  update(id: string, data: AssistantPayload): Promise<AssistantResponse> {
+  update(id: number, data: AssistantPayload): Promise<AssistantResponse> {
     return api(`/assistants/${id}`, { method: "PUT", body: data });
   },
 
-  delete(id: string, data: AssistantPayload): Promise<AssistantResponse> {
-    return api(`/assistants/${id}`, { method: "DELETE", body: data });
+  delete(id: number): Promise<AssistantResponse> {
+    return api(`/assistants/${id}`, { method: "DELETE" });
   },
 };

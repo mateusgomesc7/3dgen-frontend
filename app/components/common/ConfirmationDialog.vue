@@ -1,7 +1,10 @@
 <template>
   <v-dialog v-model="show" max-width="450" persistent>
     <template v-slot:activator="{ props: activatorProps }">
-      <div v-bind="activatorProps">
+      <div
+        v-bind="activatorProps"
+        style="display: inline-flex; width: fit-content; height: fit-content"
+      >
         <slot name="activator"></slot>
       </div>
     </template>
