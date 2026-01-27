@@ -27,8 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import CurrentModel from "./CurrentModel.vue";
-import CurrentUser from "./CurrentUser.vue";
+import CurrentModel from "./current-model/index.vue";
+import CurrentUser from "./current-user/index.vue";
 
 const assistantsStore = useAssistantsStore();
 const usersStore = useUsersStore();
