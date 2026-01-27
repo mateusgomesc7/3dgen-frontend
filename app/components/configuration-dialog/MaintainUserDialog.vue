@@ -15,7 +15,7 @@
         </v-card-title>
 
         <v-card-text class="pb-1">
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent="save">
             <v-text-field
               label="Name"
               v-model="userManipulated.name"
@@ -33,7 +33,7 @@
             text="Save"
             variant="flat"
             :disabled="disabledSave"
-            @click="emits('save')"
+            @click="save"
           >
           </v-btn>
         </v-card-actions>
@@ -48,20 +48,42 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  (e: "save"): void;
+  (e: "save", user: User): void;
 }>();
+
+const usersStore = useUsersStore();
 
 const show = ref(false);
 const valid = ref<boolean>(false);
-
 const userManipulated = ref<User>({
   name: "",
 });
+
+const save = async () => {
+  if (disabledSave.value) return;
+
+  if (userManipulated.value.id) {
+    const response = await usersStore.updateUser(userManipulated.value);
+    if (response) {
+      emits("save", response);
+      show.value = false;
+    }
+  } else {
+    const response = await usersStore.createUser(userManipulated.value);
+    if (response) {
+      emits("save", response);
+      show.value = false;
+    }
+  }
+};
+
 const editMode = computed(() => !!props.user);
 
 watch(
   () => show.value,
   () => {
+    if (!show.value) return;
+
     if (props.user) {
       userManipulated.value = { ...props.user };
     } else {

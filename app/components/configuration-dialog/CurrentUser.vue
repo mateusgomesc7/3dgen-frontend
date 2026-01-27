@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12" class="d-flex ga-4 align-center">
       <div class="font-weight-bold">Current User</div>
-      <MaintainUserDialog>
+      <MaintainUserDialog @save="updateCurrentUser">
         <template #activator>
           <v-btn
             :disabled="props.loading"
@@ -17,7 +17,7 @@
     <v-col cols="10">
       <v-autocomplete
         :model-value="usersStore.currentUser"
-        :items="props.users"
+        :items="users"
         :loading="props.loading"
         :disabled="props.loading"
         variant="outlined"
@@ -29,7 +29,10 @@
     </v-col>
 
     <v-col cols="2" class="px-0 pt-5 d-flex justify-center ga-1">
-      <MaintainUserDialog :user="usersStore.currentUser">
+      <MaintainUserDialog
+        :user="usersStore.currentUser"
+        @save="updateCurrentUser"
+      >
         <template #activator>
           <v-btn
             :disabled="props.loading || !usersStore.currentUser"
@@ -55,5 +58,24 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
+const users = toRef(props.users);
+
 const usersStore = useUsersStore();
+
+const updateCurrentUser = (user: User) => {
+  if (!users.value.find((u) => u.id === user.id)) {
+    users.value.push(user);
+  } else {
+    const index = users.value.findIndex((u) => u.id === user.id);
+    users.value[index] = user;
+  }
+  usersStore.setCurrentUser(user);
+};
+
+watch(
+  () => props.users,
+  (newUsers) => {
+    users.value = newUsers;
+  },
+);
 </script>

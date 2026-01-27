@@ -21,9 +21,36 @@ export const useUsersStore = defineStore("users", () => {
     }
   };
 
+  const createUser = async (userData: UserPayload): Promise<User | null> => {
+    try {
+      const newUser = await userApi.create(userData);
+      return newUser;
+    } catch (error) {
+      console.error("Failed to create user:", error);
+      return null;
+    }
+  };
+
+  const updateUser = async (userData: User): Promise<User | null> => {
+    if (!userData.id) {
+      console.error("User ID is required for update.");
+      return null;
+    }
+
+    try {
+      const updatedUser = await userApi.update(userData.id, userData);
+      return updatedUser;
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      return null;
+    }
+  };
+
   return {
     currentUser,
     getAllUsers,
     setCurrentUser,
+    createUser,
+    updateUser,
   };
 });
