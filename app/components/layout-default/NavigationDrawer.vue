@@ -2,9 +2,9 @@
   <v-navigation-drawer
     app
     v-model="drawer"
+    permanent
     :rail="configurationsStore.railNavigation"
     :class="{ 'cursor-ew-resize': configurationsStore.railNavigation }"
-    permanent
     @click="configurationsStore.setRailNavigation(false)"
   >
     <v-list>
@@ -77,7 +77,12 @@
 
     <v-divider v-if="!configurationsStore.railNavigation"></v-divider>
 
-    <div v-if="!configurationsStore.railNavigation">
+    <div
+      v-show="!configurationsStore.railNavigation"
+      ref="chatContainer"
+      class="chat-list-container"
+      @scroll="onScroll"
+    >
       <div class="mx-4 mt-4 font-weight-bold">Chats</div>
       <v-list v-model:selected="chatSelected" density="compact" nav>
         <v-list-item
@@ -97,10 +102,31 @@ const configurationsStore = useConfigurationsStore();
 const chatsStore = useChatsStore();
 const router = useRouter();
 
+const chatContainer = ref(null);
 const drawer = ref(true);
-
 const menuSelected = shallowRef<string[]>([]);
 const chatSelected = shallowRef<string[]>([]);
+const page = ref(1);
+const pageSize = 15;
+const totalPages = ref(1);
+
+const fillChatList = async () => {
+  await loadChats();
+
+  await nextTick();
+
+  if (chatContainer.value) {
+    const { scrollHeight, clientHeight } = chatContainer.value;
+
+    if (scrollHeight <= clientHeight && page.value <= totalPages.value) {
+      await fillChatList();
+    }
+  }
+};
+
+onMounted(async () => {
+  await fillChatList();
+});
 
 const openChat = async (chatId: number) => {
   menuSelected.value = [];
@@ -114,13 +140,35 @@ const openNewChat = async () => {
   router.replace("/");
 };
 
-watch(
-  () => configurationsStore.railNavigation,
-  async (newValue) => {
-    if (!newValue) await chatsStore.getAllChats();
-  },
-  { immediate: true },
-);
+const onScroll = async (e: Event) => {
+  const target = e.target as HTMLElement;
+
+  const scrollBottom =
+    target.scrollTop + target.clientHeight >= target.scrollHeight - 20;
+
+  if (scrollBottom) {
+    await loadChats();
+  }
+};
+
+const loadChats = async (reset = false) => {
+  if (chatsStore.loadingPagination) return;
+
+  if (!reset && page.value > totalPages.value) return;
+
+  if (reset) {
+    chatsStore.chats = [];
+    page.value = 1;
+  }
+
+  const response = await chatsStore.getPaginatedChats({
+    page: page.value,
+    page_size: pageSize,
+  });
+
+  totalPages.value = response.pages;
+  page.value++;
+};
 
 watch(
   () => chatsStore.currentChat,
@@ -148,5 +196,17 @@ watch(
 
 .rotate-90 {
   transform: rotate(-90deg);
+}
+
+:deep(.v-navigation-drawer__content) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-list-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 </style>

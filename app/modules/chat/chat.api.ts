@@ -1,10 +1,25 @@
 import { api } from "@/services/api";
-import type { ChatPayload, ChatResponse } from "./chat.types";
+import type {
+  ChatPayload,
+  ChatResponse,
+  PaginatedResponse,
+} from "./chat.types";
 import type { MessageResponse } from "../message/message.types";
 
 export const chatApi = {
-  getAll(): Promise<ChatResponse[]> {
-    return api("/chats/", { method: "GET" });
+  getPaginated(params?: {
+    page?: number;
+    page_size?: number;
+    user_id?: number;
+  }): Promise<PaginatedResponse<ChatResponse>> {
+    return api("/chats/", {
+      method: "GET",
+      params: {
+        page: params?.page ?? 1,
+        page_size: params?.page_size ?? 10,
+        user_id: params?.user_id,
+      },
+    });
   },
 
   getById(id: number): Promise<ChatResponse> {

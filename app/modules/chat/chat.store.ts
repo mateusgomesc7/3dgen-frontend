@@ -1,5 +1,9 @@
 import { chatApi } from "./chat.api";
-import type { ChatResponse, ChatCurrent } from "./chat.types";
+import type {
+  ChatResponse,
+  ChatCurrent,
+  PaginatedResponse,
+} from "./chat.types";
 
 export const useChatsStore = defineStore("chats", () => {
   const messagesStore = useMessagesStore();
@@ -10,21 +14,28 @@ export const useChatsStore = defineStore("chats", () => {
   const currentChat = ref<ChatCurrent | null>(null);
   const chatJustCreated = ref(false);
   const loading = ref(false);
+  const loadingPagination = ref(false);
 
   const clearCurrentChat = () => {
     currentChat.value = null;
     messagesStore.messages = [];
   };
 
-  const getAllChats = async () => {
-    loading.value = true;
+  const getPaginatedChats = async (params?: {
+    page?: number;
+    page_size?: number;
+    user_id?: number;
+  }): Promise<PaginatedResponse<ChatResponse>> => {
+    loadingPagination.value = true;
     try {
-      const response = await chatApi.getAll();
-      chats.value = response;
+      const response = await chatApi.getPaginated(params);
+      chats.value.push(...response.items);
+      return response;
     } catch (error) {
-      console.error("Failed to fetch chats:", error);
+      console.error("Failed to fetch paginated chats:", error);
+      throw error;
     } finally {
-      loading.value = false;
+      loadingPagination.value = false;
     }
   };
 
@@ -72,8 +83,9 @@ export const useChatsStore = defineStore("chats", () => {
     currentChat,
     chatJustCreated,
     loading,
+    loadingPagination,
     clearCurrentChat,
-    getAllChats,
+    getPaginatedChats,
     getMessagesByChatId,
     createChat,
   };

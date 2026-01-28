@@ -24,3 +24,11 @@ export interface ChatCurrent {
   created_at?: string;
   updated_at?: string;
 }
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  page: number;
+  page_size: number;
+  total: number;
+  pages: number;
+}
