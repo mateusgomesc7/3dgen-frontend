@@ -8,6 +8,8 @@
         size="small"
         color="white"
         text="New"
+        href="https://ollama.com/search"
+        target="_blank"
       />
     </v-col>
 
