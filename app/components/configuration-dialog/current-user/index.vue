@@ -71,6 +71,7 @@ const props = defineProps<{
 const users = toRef(props.users);
 
 const usersStore = useUsersStore();
+const snackbarStore = useSnackbarStore();
 
 const updateCurrentUser = (user: User) => {
   if (!users.value.find((u) => u.id === user.id)) {
@@ -94,6 +95,7 @@ const deleteCurrentUser = async () => {
 
   if (nextUser) {
     usersStore.setCurrentUser(nextUser);
+    snackbarStore.showSnackbar("User deleted successfully", "success");
     return;
   }
 

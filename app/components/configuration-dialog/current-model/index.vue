@@ -54,6 +54,7 @@ const props = defineProps<{
 }>();
 
 const assistantsStore = useAssistantsStore();
+const snackbarStore = useSnackbarStore();
 
 const deleteCurrentModel = async () => {
   if (!assistantsStore.currentAssistant || !assistantsStore.currentAssistant.id)
@@ -69,6 +70,7 @@ const deleteCurrentModel = async () => {
 
   if (nextModel) {
     assistantsStore.setCurrentAssistant(nextModel);
+    snackbarStore.showSnackbar("Model deleted successfully", "success");
     return;
   }
 

@@ -23,6 +23,7 @@
               label="Name"
               v-model="userManipulated.name"
               variant="outlined"
+              autocomplete="off"
               required
               :rules="[(v) => !!v || 'Name is required']"
             />
@@ -55,6 +56,7 @@ const emits = defineEmits<{
 }>();
 
 const usersStore = useUsersStore();
+const snackbarStore = useSnackbarStore();
 
 const show = ref(false);
 const valid = ref<boolean>(false);
@@ -70,12 +72,14 @@ const save = async () => {
     if (response) {
       emits("save", response);
       show.value = false;
+      snackbarStore.showSnackbar("User updated successfully", "success");
     }
   } else {
     const response = await usersStore.createUser(userManipulated.value);
     if (response) {
       emits("save", response);
       show.value = false;
+      snackbarStore.showSnackbar("User created successfully", "success");
     }
   }
 };
