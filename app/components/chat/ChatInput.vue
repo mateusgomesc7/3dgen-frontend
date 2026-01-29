@@ -14,6 +14,8 @@
     max-rows="15"
     auto-grow
     autofocus
+    persistent-hint
+    :hint="`Model: ${assistantsStore.currentAssistant?.name}`"
     @keydown="onKeyDown"
   >
     <template v-slot:append-inner>
@@ -28,6 +30,8 @@
 const emit = defineEmits<{
   sendMessage: [text: string];
 }>();
+
+const assistantsStore = useAssistantsStore();
 
 const text = ref("");
 
@@ -78,5 +82,9 @@ const onKeyDown = (e: KeyboardEvent) => {
 ::v-deep(.thin-scroll .v-field__input) {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+::v-deep(.v-messages__message) {
+  text-align: center;
 }
 </style>
