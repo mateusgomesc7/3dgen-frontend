@@ -14,8 +14,8 @@
       <v-col
         v-if="message.role === 'user'"
         align-self="end"
-        class="mb-n8"
-        :cols="hasAnyCodeOpened ? 9 : 12"
+        class="mb-n8 d-flex justify-center"
+        cols="12"
         :class="hasAnyCodeOpened ? 'pr-2' : ''"
       >
         <MarkdownMessage :text="message.content" :role="message.role" />

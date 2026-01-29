@@ -1,6 +1,6 @@
 <template>
   <div
-    class="d-flex"
+    class="d-flex markdown-container"
     :class="props.role === 'assistant' ? 'justify-start' : 'justify-end'"
   >
     <div
@@ -37,6 +37,11 @@ const rendered = computed(() => md.render(normalizedText.value));
 </script>
 
 <style scoped>
+.markdown-container {
+  max-width: 800px;
+  width: 100%;
+}
+
 :deep(.markdown) p {
   margin-bottom: 1rem;
 }
