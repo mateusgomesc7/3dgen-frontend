@@ -94,12 +94,32 @@
         ></v-list-item>
       </v-list>
     </div>
+
+    <div class="mt-auto">
+      <v-divider v-if="!configurationsStore.railNavigation"></v-divider>
+      <div class="d-flex justify-center align-center py-2 ga-2 text-center">
+        <v-btn variant="text">
+          <v-icon
+            size="22"
+            :class="{ 'mr-2': !configurationsStore.railNavigation }"
+          >
+            mdi-account
+          </v-icon>
+          {{
+            !configurationsStore.railNavigation
+              ? usersStores.currentUser?.name
+              : ""
+          }}
+        </v-btn>
+      </div>
+    </div>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
 const configurationsStore = useConfigurationsStore();
 const chatsStore = useChatsStore();
+const usersStores = useUsersStore();
 const router = useRouter();
 
 const chatContainer = ref(null);
