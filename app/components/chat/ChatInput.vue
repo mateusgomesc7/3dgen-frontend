@@ -13,6 +13,7 @@
     rows="1"
     max-rows="15"
     auto-grow
+    autofocus
     @keydown="onKeyDown"
   >
     <template v-slot:append-inner>
