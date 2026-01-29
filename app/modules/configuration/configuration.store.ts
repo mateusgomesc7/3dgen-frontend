@@ -1,4 +1,6 @@
 export const useConfigurationsStore = defineStore("configurations", () => {
+  const showConfigurationDialog = ref(false);
+
   const railNavigation = ref(
     localStorage.getItem("3dgen_railNavigation") === "true",
   );
@@ -9,6 +11,7 @@ export const useConfigurationsStore = defineStore("configurations", () => {
   };
 
   return {
+    showConfigurationDialog,
     railNavigation,
     setRailNavigation,
   };

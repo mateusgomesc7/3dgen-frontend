@@ -98,7 +98,10 @@
     <div class="mt-auto">
       <v-divider v-if="!configurationsStore.railNavigation"></v-divider>
       <div class="d-flex justify-center align-center py-2 ga-2 text-center">
-        <v-btn variant="text">
+        <v-btn
+          variant="text"
+          @click.stop="configurationsStore.showConfigurationDialog = true"
+        >
           <v-icon
             size="22"
             :class="{ 'mr-2': !configurationsStore.railNavigation }"

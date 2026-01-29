@@ -2,7 +2,13 @@
   <v-app-bar app name="app-bar">
     <v-app-bar-title>3DGen</v-app-bar-title>
     <template v-slot:append>
-      <configuration-dialog />
+      <configuration-dialog
+        v-model="configurationsStore.showConfigurationDialog"
+      />
     </template>
   </v-app-bar>
 </template>
+
+<script setup lang="ts">
+const configurationsStore = useConfigurationsStore();
+</script>

@@ -30,10 +30,17 @@
 import CurrentModel from "./current-model/index.vue";
 import CurrentUser from "./current-user/index.vue";
 
+const componentProps = defineProps<{
+  modelValue: boolean;
+}>();
+
+const emits = defineEmits<{
+  (e: "update:modelValue", value: boolean): void;
+}>();
+
 const assistantsStore = useAssistantsStore();
 const usersStore = useUsersStore();
 
-const show = ref(false);
 const models = ref<Assistant[]>([]);
 const loadingModels = ref(false);
 const users = ref<User[]>([]);
@@ -50,6 +57,13 @@ const loadUsers = async () => {
   users.value = await usersStore.getAllUsers();
   loadingUsers.value = false;
 };
+
+const show = computed({
+  get: () => componentProps.modelValue,
+  set: (val: boolean) => {
+    emits("update:modelValue", val);
+  },
+});
 
 watch(show, async (newVal) => {
   if (!newVal) return;
