@@ -1,6 +1,6 @@
 <template>
   <div
-    class="d-flex position-relative"
+    class="d-flex position-relative mx-auto code-container"
     :class="role === 'assistant' ? 'justify-start' : 'justify-end'"
   >
     <v-textarea
@@ -10,7 +10,8 @@
       bg-color="grey-darken-3"
       rounded="lg"
       hide-details
-      min-width="800"
+      min-width="774"
+      class="code-editor-field"
       :loading="props.loading"
       @update:model-value="emitUpdate"
     />
@@ -65,9 +66,25 @@ function emitUpdate(value) {
 </script>
 
 <style scoped>
+.code-container {
+  max-width: 776px;
+}
+
+.code-editor-field {
+  font-family: "Source Code Pro", monospace;
+}
+
 .editor-loading {
   right: 8px;
   top: 12px;
   pointer-events: none;
+}
+
+:deep(.v-field__input) {
+  overflow: hidden !important;
+}
+
+:deep(textarea) {
+  overflow: hidden !important;
 }
 </style>

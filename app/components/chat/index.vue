@@ -23,7 +23,8 @@
 
       <v-col
         v-if="message.role === 'assistant' && message.id"
-        :cols="openCodes[message.id] || transitioning[message.id] ? 6 : 12"
+        cols="12"
+        :xl="openCodes[message.id] || transitioning[message.id] ? 6 : 12"
       >
         <ThreeSandbox
           :code="message.content"
@@ -35,7 +36,12 @@
         />
       </v-col>
 
-      <v-col cols="6" v-if="message.role === 'assistant' && message.id">
+      <v-col
+        v-if="message.role === 'assistant' && message.id"
+        cols="12"
+        xl="6"
+        class="mt-xl-0 mt-lg-4 mt-4"
+      >
         <v-expand-x-transition
           @before-enter="transitioning[message.id] = true"
           @after-leave="transitioning[message.id] = false"
