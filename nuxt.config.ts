@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   runtimeConfig: {
     public: {
-      apiBaseUrl: "http://localhost:8000",
+      apiBaseUrl: "",
     },
   },
   build: {
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
             styles: {
               configFile: "styles/settings.scss",
             },
-          })
+          }),
         );
       });
     },
