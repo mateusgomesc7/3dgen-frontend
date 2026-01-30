@@ -13,7 +13,7 @@
       />
     </v-col>
 
-    <v-col cols="11">
+    <v-col cols="10">
       <v-autocomplete
         :model-value="assistantsStore.currentAssistant"
         :items="props.models"
@@ -27,7 +27,13 @@
       />
     </v-col>
 
-    <v-col cols="1" class="px-0 pt-5 d-flex justify-center">
+    <v-col cols="2" class="px-0 pt-5 d-flex justify-center">
+      <v-btn
+        :disabled="props.loading"
+        icon="mdi-refresh"
+        size="small"
+        @click="emits('sync-models')"
+      />
       <ConfirmationDialog
         title="Confirm Deletion"
         confirmText="Are you sure you want to delete the current model?"
@@ -51,6 +57,10 @@ import ConfirmationDialog from "@/components/common/ConfirmationDialog.vue";
 const props = defineProps<{
   models: Assistant[];
   loading: boolean;
+}>();
+
+const emits = defineEmits<{
+  (e: "sync-models"): void;
 }>();
 
 const assistantsStore = useAssistantsStore();

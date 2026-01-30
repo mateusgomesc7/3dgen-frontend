@@ -31,10 +31,20 @@ export const useAssistantsStore = defineStore("assistants", () => {
     }
   };
 
+  const syncAssistants = async (): Promise<Assistant[]> => {
+    try {
+      return await assistantApi.sync();
+    } catch (error) {
+      console.error("Failed to sync assistants:", error);
+      return [];
+    }
+  };
+
   return {
     currentAssistant,
     getAllAssistants,
     setCurrentAssistant,
     deleteAssistant,
+    syncAssistants,
   };
 });

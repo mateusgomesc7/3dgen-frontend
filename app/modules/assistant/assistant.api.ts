@@ -21,4 +21,8 @@ export const assistantApi = {
   delete(id: number): Promise<AssistantResponse> {
     return api(`/assistants/${id}`, { method: "DELETE" });
   },
+
+  sync(): Promise<AssistantResponse[]> {
+    return api("/assistants/sync/", { method: "POST" });
+  },
 };

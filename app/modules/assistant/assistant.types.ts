@@ -9,6 +9,7 @@ export interface Assistant {
   name: string;
   provider: string;
   model: string;
+  is_active: boolean;
 }
 
 export interface AssistantResponse {
@@ -16,4 +17,5 @@ export interface AssistantResponse {
   name: string;
   provider: string;
   model: string;
+  is_active: boolean;
 }

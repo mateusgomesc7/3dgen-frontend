@@ -17,7 +17,11 @@
         </v-card-title>
 
         <v-card-text>
-          <CurrentModel :models="models" :loading="loadingModels" />
+          <CurrentModel
+            :models="models"
+            :loading="loadingModels"
+            @sync-models="synchModels"
+          />
 
           <CurrentUser :users="users" :loading="loadingUsers" />
         </v-card-text>
@@ -56,6 +60,12 @@ const loadUsers = async () => {
   loadingUsers.value = true;
   users.value = await usersStore.getAllUsers();
   loadingUsers.value = false;
+};
+
+const synchModels = async () => {
+  loadingModels.value = true;
+  models.value = await assistantsStore.syncAssistants();
+  loadingModels.value = false;
 };
 
 const show = computed({
