@@ -64,7 +64,8 @@ const loadUsers = async () => {
 
 const synchModels = async () => {
   loadingModels.value = true;
-  models.value = await assistantsStore.syncAssistants();
+  await assistantsStore.syncAssistants();
+  models.value = await assistantsStore.getAllAssistants();
   loadingModels.value = false;
 };
 
