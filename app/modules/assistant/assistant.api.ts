@@ -2,8 +2,8 @@ import { api } from "@/services/api";
 import type { AssistantPayload, AssistantResponse } from "./assistant.types";
 
 export const assistantApi = {
-  getAll(): Promise<AssistantResponse[]> {
-    return api("/assistants/", { method: "GET" });
+  getAll(params?: { is_active?: boolean }): Promise<AssistantResponse[]> {
+    return api("/assistants/", { method: "GET", params });
   },
 
   getById(id: number): Promise<AssistantResponse> {
@@ -23,6 +23,6 @@ export const assistantApi = {
   },
 
   sync(): Promise<AssistantResponse[]> {
-    return api("/assistants/sync/", { method: "POST" });
+    return api("/assistants/sync", { method: "POST" });
   },
 };

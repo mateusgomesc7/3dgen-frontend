@@ -14,7 +14,8 @@ export const useAssistantsStore = defineStore("assistants", () => {
 
   const getAllAssistants = async (): Promise<Assistant[]> => {
     try {
-      return await assistantApi.getAll();
+      const params = { is_active: true };
+      return await assistantApi.getAll(params);
     } catch (error) {
       console.error("Failed to fetch assistants:", error);
       return [];
