@@ -8,7 +8,6 @@ import type {
 export const useChatsStore = defineStore("chats", () => {
   const messagesStore = useMessagesStore();
   const usersStore = useUsersStore();
-  const assistantsStore = useAssistantsStore();
 
   const chats = ref<Array<ChatResponse>>([]);
   const currentChat = ref<ChatCurrent | null>(null);
@@ -63,7 +62,6 @@ export const useChatsStore = defineStore("chats", () => {
     try {
       const payload = {
         user_id: usersStore.currentUser?.id!,
-        assistant_id: assistantsStore.currentAssistant?.id!,
       };
       const newChat = await chatApi.create(payload);
       currentChat.value = newChat;

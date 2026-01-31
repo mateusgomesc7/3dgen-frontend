@@ -87,6 +87,7 @@ import type { MessagePayload } from "~/modules/message/message.types";
 
 const messagesStore = useMessagesStore();
 const chatsStore = useChatsStore();
+const assistantsStore = useAssistantsStore();
 const router = useRouter();
 
 const shouldAutoScroll = ref(true);
@@ -127,6 +128,7 @@ const handleSendMessage = async (text: string) => {
 
   await sendMessage({
     chat_id: chatsStore.currentChat.id,
+    assistant_id: assistantsStore.currentAssistant?.id ?? null,
     role: "user",
     content: text,
   });
