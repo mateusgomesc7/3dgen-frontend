@@ -9,12 +9,13 @@
             size="small"
             color="white"
             text="New"
+            height="24"
           />
         </template>
       </MaintainUserDialog>
     </v-col>
 
-    <v-col cols="10">
+    <v-col cols="5">
       <v-autocomplete
         :model-value="usersStore.currentUser"
         :items="users"
@@ -28,7 +29,7 @@
       />
     </v-col>
 
-    <v-col cols="2" class="px-0 pt-5 d-flex justify-center ga-1">
+    <v-col cols="2" class="px-0 pt-5 d-flex justify-center ga-2">
       <MaintainUserDialog
         :user="usersStore.currentUser"
         @save="updateCurrentUser"

@@ -1,6 +1,6 @@
 export interface MessagePayload {
   chat_id: number;
-  assistant_id?: number | null;
+  model_id: number;
   role: string;
   content: string;
 }
@@ -8,7 +8,7 @@ export interface MessagePayload {
 export interface MessageResponse {
   id: number;
   chat_id: number;
-  assistant_id?: number | null;
+  model_id: number;
   role: string;
   content: string;
   created_at: string;
@@ -18,7 +18,7 @@ export interface MessageResponse {
 export interface MessageChat {
   id?: number;
   chat_id: number;
-  assistant_id?: number | null;
+  model_id: number;
   role: string;
   content: string;
 }

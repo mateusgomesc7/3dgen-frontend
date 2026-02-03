@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" max-width="500">
+  <v-dialog v-model="show" max-width="800" persistent>
     <template v-slot:activator="{ props: activatorProps }">
       <v-btn v-bind="activatorProps" icon="mdi-cog"></v-btn>
     </template>
@@ -17,10 +17,13 @@
         </v-card-title>
 
         <v-card-text>
-          <CurrentModel
+          <CurrentProviderModel
+            :providers="providers"
             :models="models"
-            :loading="loadingModels"
-            @sync-models="synchModels"
+            :loading-providers="loadingProviders"
+            :loading-models="loadingModels"
+            @sync-provider-models="syncProviderModels"
+            @delete-current-model="deleteCurrentModel"
           />
 
           <CurrentUser :users="users" :loading="loadingUsers" />
@@ -31,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import CurrentModel from "./current-model/index.vue";
+import CurrentProviderModel from "./current-provider-model/index.vue";
 import CurrentUser from "./current-user/index.vue";
 
 const componentProps = defineProps<{
@@ -42,18 +45,22 @@ const emits = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
 
-const assistantsStore = useAssistantsStore();
+const modelsStore = useModelsStore();
+const providersStore = useProvidersStore();
 const usersStore = useUsersStore();
+const snackbarStore = useSnackbarStore();
 
-const models = ref<Assistant[]>([]);
-const loadingModels = ref(false);
+const models = ref<Model[]>([]);
+const providers = ref<Provider[]>([]);
 const users = ref<User[]>([]);
+const loadingModels = ref(false);
+const loadingProviders = ref(false);
 const loadingUsers = ref(false);
 
-const loadModels = async () => {
-  loadingModels.value = true;
-  models.value = await assistantsStore.getAllAssistants();
-  loadingModels.value = false;
+const loadProviders = async () => {
+  loadingProviders.value = true;
+  providers.value = await providersStore.getAllProviders();
+  loadingProviders.value = false;
 };
 
 const loadUsers = async () => {
@@ -62,11 +69,65 @@ const loadUsers = async () => {
   loadingUsers.value = false;
 };
 
-const synchModels = async () => {
+const loadModelsbyProvider = async () => {
+  if (!providersStore.currentProvider || !providersStore.currentProvider.id)
+    return;
   loadingModels.value = true;
-  await assistantsStore.syncAssistants();
-  models.value = await assistantsStore.getAllAssistants();
+
+  models.value = await providersStore.gelModelsByProvider(
+    providersStore.currentProvider.id,
+  );
+  if (modelsStore.currentModel) {
+    const exists = models.value.find(
+      (m) => m.id === modelsStore.currentModel?.id,
+    );
+    if (!exists) {
+      const nextModel = models.value.length > 0 ? models.value[0] : null;
+      if (nextModel) {
+        modelsStore.setCurrentModel(nextModel);
+      } else {
+        modelsStore.setCurrentModel(null);
+      }
+    }
+  }
+
   loadingModels.value = false;
+};
+
+const syncProviderModels = async () => {
+  loadingProviders.value = true;
+  loadingModels.value = true;
+
+  if (providersStore.currentProvider && providersStore.currentProvider.id) {
+    await providersStore.syncProviderModels(providersStore.currentProvider.id);
+  }
+  models.value = await providersStore.gelModelsByProvider(
+    providersStore.currentProvider?.id ?? 0,
+  );
+
+  loadingProviders.value = false;
+  loadingModels.value = false;
+};
+
+const deleteCurrentModel = async () => {
+  if (!modelsStore.currentModel || !modelsStore.currentModel.id) return;
+
+  const response = await modelsStore.deleteModel(modelsStore.currentModel.id);
+
+  if (!response) return;
+
+  models.value = models.value.filter(
+    (m) => m.id !== modelsStore.currentModel?.id,
+  );
+  const nextModel = models.value.length > 0 ? models.value[0] : null;
+
+  if (nextModel) {
+    modelsStore.setCurrentModel(nextModel);
+    snackbarStore.showSnackbar("Model deleted successfully", "success");
+    return;
+  }
+
+  modelsStore.setCurrentModel(null);
 };
 
 const show = computed({
@@ -79,6 +140,14 @@ const show = computed({
 watch(show, async (newVal) => {
   if (!newVal) return;
 
-  await Promise.all([loadModels(), loadUsers()]);
+  await Promise.all([loadProviders(), loadUsers()]);
 });
+
+watch(
+  () => providersStore.currentProvider,
+  async () => {
+    await loadModelsbyProvider();
+  },
+  { immediate: true },
+);
 </script>

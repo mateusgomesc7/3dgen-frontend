@@ -15,7 +15,7 @@
     auto-grow
     autofocus
     persistent-hint
-    :hint="`Model: ${assistantsStore.currentAssistant?.name}`"
+    :hint="`${modelsStore.currentModel?.name}`"
     @keydown="onKeyDown"
   >
     <template v-slot:append-inner>
@@ -31,7 +31,7 @@ const emit = defineEmits<{
   sendMessage: [text: string];
 }>();
 
-const assistantsStore = useAssistantsStore();
+const modelsStore = useModelsStore();
 
 const text = ref("");
 

@@ -87,7 +87,7 @@ import type { MessagePayload } from "~/modules/message/message.types";
 
 const messagesStore = useMessagesStore();
 const chatsStore = useChatsStore();
-const assistantsStore = useAssistantsStore();
+const modelsStore = useModelsStore();
 const router = useRouter();
 
 const shouldAutoScroll = ref(true);
@@ -118,6 +118,11 @@ const observer = new ResizeObserver(() => {
 const handleSendMessage = async (text: string) => {
   shouldAutoScroll.value = true;
 
+  if (!modelsStore.currentModel) {
+    alert("Please select a model before sending a message.");
+    return;
+  }
+
   if (chatsStore.currentChat === null) {
     const response = await chatsStore.createChat();
     if (!response) return;
@@ -128,7 +133,7 @@ const handleSendMessage = async (text: string) => {
 
   await sendMessage({
     chat_id: chatsStore.currentChat.id,
-    assistant_id: assistantsStore.currentAssistant?.id ?? null,
+    model_id: modelsStore.currentModel.id,
     role: "user",
     content: text,
   });
