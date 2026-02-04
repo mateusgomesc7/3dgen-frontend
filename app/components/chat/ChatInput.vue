@@ -15,11 +15,17 @@
     auto-grow
     autofocus
     persistent-hint
+    :error-messages="
+      !modelsStore.currentModel
+        ? 'Please select a model first in the settings.'
+        : ''
+    "
+    :readonly="!modelsStore.currentModel"
     :hint="`${modelsStore.currentModel?.name}`"
     @keydown="onKeyDown"
   >
     <template v-slot:append-inner>
-      <v-btn icon @click="generate" variant="plain">
+      <v-btn icon @click="generate" variant="plain" :disabled="!text.trim()">
         <v-icon icon="mdi-arrow-up-circle" size="40" />
       </v-btn>
     </template>
