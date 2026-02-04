@@ -24,6 +24,7 @@
         variant="outlined"
         item-title="name"
         item-value="id"
+        autocomplete="off"
         return-object
         @update:model-value="(val) => providersStore.setCurrentProvider(val)"
       />
@@ -38,6 +39,7 @@
         variant="outlined"
         item-title="name"
         item-value="id"
+        autocomplete="off"
         return-object
         @update:model-value="(val) => modelsStore.setCurrentModel(val)"
       />
@@ -53,11 +55,12 @@
       <ConfirmationDialog
         title="Confirm Deletion"
         confirmText="Are you sure you want to delete the current model?"
+        :disabled="disabledDelete"
         @confirm="emits('delete-current-model')"
       >
         <template #activator>
           <v-btn
-            :disabled="props.loadingModels || !modelsStore.currentModel"
+            :disabled="disabledDelete"
             size="small"
             icon="mdi-trash-can"
           ></v-btn>
@@ -85,4 +88,8 @@ const emits = defineEmits<{
 
 const providersStore = useProvidersStore();
 const modelsStore = useModelsStore();
+
+const disabledDelete = computed(() => {
+  return props.loadingModels || !modelsStore.currentModel;
+});
 </script>

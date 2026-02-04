@@ -24,6 +24,7 @@
         variant="outlined"
         item-title="name"
         item-value="id"
+        autocomplete="off"
         return-object
         @update:model-value="(val) => usersStore.setCurrentUser(val)"
       />
