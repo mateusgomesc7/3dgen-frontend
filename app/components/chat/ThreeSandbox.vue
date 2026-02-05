@@ -33,7 +33,7 @@
     <iframe
       ref="iframeRef"
       class="sandbox-frame"
-      sandbox="allow-scripts allow-same-origin"
+      sandbox="allow-scripts allow-same-origin allow-pointer-lock"
     />
   </div>
 </template>
