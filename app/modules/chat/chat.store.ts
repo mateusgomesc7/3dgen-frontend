@@ -55,13 +55,14 @@ export const useChatsStore = defineStore("chats", () => {
     }
   };
 
-  const createChat = async (): Promise<ChatResponse> => {
+  const createChat = async (userPrompt: string): Promise<ChatResponse> => {
     loading.value = true;
     chatJustCreated.value = true;
 
     try {
       const payload = {
         user_id: usersStore.currentUser?.id!,
+        user_prompt: userPrompt,
       };
       const newChat = await chatApi.create(payload);
       currentChat.value = newChat;

@@ -120,7 +120,7 @@ const observer = new ResizeObserver(() => {
   bottomEl.value?.scrollIntoView({ block: "end", behavior: "smooth" });
 });
 
-const handleSendMessage = async (text: string) => {
+const handleSendMessage = async (userPrompt: string) => {
   shouldAutoScroll.value = true;
 
   if (!modelsStore.currentModel) {
@@ -129,7 +129,7 @@ const handleSendMessage = async (text: string) => {
   }
 
   if (chatsStore.currentChat === null) {
-    const response = await chatsStore.createChat();
+    const response = await chatsStore.createChat(userPrompt);
     if (!response) return;
     router.replace(`/chat/${response.id}`);
   }
@@ -140,7 +140,7 @@ const handleSendMessage = async (text: string) => {
     chat_id: chatsStore.currentChat.id,
     model_id: modelsStore.currentModel.id,
     role: "user",
-    content: text,
+    content: userPrompt,
   });
 };
 

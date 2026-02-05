@@ -88,7 +88,7 @@
         <v-list-item
           v-for="chat in chatsStore.chats"
           :key="chat.id"
-          :title="`Chat ${chat.id}`"
+          :title="chat.name ?? `Chat ${chat.id}`"
           :value="`chat-${chat.id}`"
           @click.stop="openChat(chat.id)"
         ></v-list-item>
