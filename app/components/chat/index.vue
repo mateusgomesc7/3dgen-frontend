@@ -26,14 +26,19 @@
         cols="12"
         :xl="openCodes[message.id] || transitioning[message.id] ? 6 : 12"
       >
-        <ThreeSandbox
-          :code="message.content"
-          :sandbox-id="message.id"
-          :is-dirty="isDirty[message.id]"
-          @open-code="openCode(message)"
-          @cancel-code="cancelCode(message)"
-          @save-code="saveCode(message)"
-        />
+        <div
+          class="three-sticky-wrapper"
+          :class="{ 'is-sticky': openCodes[message.id] }"
+        >
+          <ThreeSandbox
+            :code="message.content"
+            :sandbox-id="message.id"
+            :is-dirty="isDirty[message.id]"
+            @open-code="openCode(message)"
+            @cancel-code="cancelCode(message)"
+            @save-code="saveCode(message)"
+          />
+        </div>
       </v-col>
 
       <v-col
@@ -243,5 +248,13 @@ const hasAnyCodeOpened = computed(() => {
   border-radius: 8px;
   height: 498px;
   margin-bottom: 32px;
+}
+
+@media (min-width: 1920px) {
+  .three-sticky-wrapper.is-sticky {
+    position: sticky;
+    top: 180px;
+    align-self: flex-start;
+  }
 }
 </style>
