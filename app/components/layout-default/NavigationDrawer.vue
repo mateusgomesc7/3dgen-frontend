@@ -84,15 +84,7 @@
       @scroll="onScroll"
     >
       <div class="mx-4 mt-4 font-weight-bold">Chats</div>
-      <v-list v-model:selected="chatSelected" density="compact" nav>
-        <v-list-item
-          v-for="chat in chatsStore.chats"
-          :key="chat.id"
-          :title="chat.name ?? `Chat ${chat.id}`"
-          :value="`chat-${chat.id}`"
-          @click.stop="openChat(chat.id)"
-        ></v-list-item>
-      </v-list>
+      <ChatList :selected="chatSelected" @open-chat="openChat" />
     </div>
 
     <div class="mt-auto">
@@ -120,6 +112,8 @@
 </template>
 
 <script setup lang="ts">
+import ChatList from "./ChatList.vue";
+
 const configurationsStore = useConfigurationsStore();
 const chatsStore = useChatsStore();
 const usersStores = useUsersStore();
