@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import NavigationDrawer from "@/components/layout-default/NavigationDrawer.vue";
+import NavigationDrawer from "@/components/layout-default/navigation-drawer/index.vue";
 import TopBar from "@/components/layout-default/TopBar.vue";
 </script>
 
