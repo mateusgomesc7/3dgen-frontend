@@ -90,4 +90,12 @@ const internalSelected = computed({
 :deep(.v-list-item__spacer) {
   width: 16px !important;
 }
+
+:deep(.v-list-item .v-list-item__append) {
+  opacity: 0;
+}
+
+:deep(.v-list-item:hover .v-list-item__append) {
+  opacity: 1;
+}
 </style>
