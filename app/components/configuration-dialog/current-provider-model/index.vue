@@ -41,7 +41,7 @@
         item-value="id"
         autocomplete="off"
         return-object
-        @update:model-value="(val) => modelsStore.setCurrentModel(val)"
+        @update:model-value="handleChangeModel"
       />
     </v-col>
 
@@ -88,6 +88,15 @@ const emits = defineEmits<{
 
 const providersStore = useProvidersStore();
 const modelsStore = useModelsStore();
+const snackbarStore = useSnackbarStore();
+
+const handleChangeModel = (model: Model) => {
+  if (modelsStore.currentModel && model.id === modelsStore.currentModel.id)
+    return;
+
+  modelsStore.setCurrentModel(model);
+  snackbarStore.showSnackbar("Current model updated", "info", 1500);
+};
 
 const disabledDelete = computed(() => {
   return props.loadingModels || !modelsStore.currentModel;

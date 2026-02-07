@@ -90,7 +90,7 @@ const handleChangeCurrentUser = (user: User) => {
   if (user.id === usersStore.currentUser?.id) return;
 
   usersStore.setCurrentUser(user);
-  snackbarStore.showSnackbar("Current user updated", "info");
+  snackbarStore.showSnackbar("Current user updated", "info", 1500);
 };
 
 const deleteCurrentUser = async () => {
