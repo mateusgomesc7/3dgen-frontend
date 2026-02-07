@@ -15,7 +15,7 @@
       />
     </v-col>
 
-    <v-col cols="5">
+    <v-col cols="12" md="5">
       <v-autocomplete
         :model-value="providersStore.currentProvider"
         :items="props.providers"
@@ -30,7 +30,7 @@
       />
     </v-col>
 
-    <v-col cols="5">
+    <v-col cols="10" md="5">
       <v-autocomplete
         :model-value="modelsStore.currentModel"
         :items="props.models"
@@ -45,7 +45,10 @@
       />
     </v-col>
 
-    <v-col cols="2" class="px-0 pt-5 d-flex justify-center ga-2">
+    <v-col
+      cols="2"
+      class="px-0 pt-0 pt-sm-0 pt-md-5 mt-n2 mt-sm-n2 mt-md-0 d-flex justify-center ga-2 flex-column flex-sm-column flex-md-row"
+    >
       <v-btn
         :disabled="props.loadingModels"
         icon="mdi-refresh"
