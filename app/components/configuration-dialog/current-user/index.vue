@@ -47,13 +47,14 @@
       <ConfirmationDialog
         title="Confirm Deletion"
         confirmText="Are you sure you want to delete the current user?"
+        :disabled="disabledDelete"
         @confirm="deleteCurrentUser"
       >
         <template #activator>
           <v-btn
-            :disabled="props.loading || !usersStore.currentUser"
             size="small"
             icon="mdi-trash-can"
+            :disabled="disabledDelete"
           ></v-btn>
         </template>
       </ConfirmationDialog>
@@ -103,6 +104,12 @@ const deleteCurrentUser = async () => {
 
   usersStore.setCurrentUser(null);
 };
+
+const onlyOneUser = computed(() => users.value.length === 1);
+
+const disabledDelete = computed(() => {
+  return props.loading || !usersStore.currentUser || onlyOneUser.value;
+});
 
 watch(
   () => props.users,

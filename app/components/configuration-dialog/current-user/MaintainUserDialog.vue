@@ -86,6 +86,13 @@ const save = async () => {
 
 const editMode = computed(() => !!props.user);
 
+const disabledSave = computed(() => {
+  return (
+    !valid.value ||
+    (editMode.value && userManipulated.value?.name === props.user?.name)
+  );
+});
+
 watch(
   () => show.value,
   () => {
@@ -101,11 +108,4 @@ watch(
   },
   { immediate: true },
 );
-
-const disabledSave = computed(() => {
-  return (
-    !valid.value ||
-    (editMode.value && userManipulated.value?.name === props.user?.name)
-  );
-});
 </script>
