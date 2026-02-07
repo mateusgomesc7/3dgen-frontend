@@ -83,7 +83,12 @@
       class="chat-list-container"
       @scroll="onScroll"
     >
-      <div class="mx-4 mt-4 font-weight-bold">Chats</div>
+      <div
+        v-if="chatsStore.chats.length > 0"
+        class="mx-4 mt-4 font-weight-bold"
+      >
+        Chats
+      </div>
       <ChatList
         :selected="chatSelected"
         @open-chat="openChat"
@@ -206,6 +211,7 @@ const loadChats = async (reset = false) => {
   const response = await chatsStore.getPaginatedChats({
     page: page.value,
     page_size: pageSize,
+    user_id: usersStores.currentUser?.id,
   });
 
   totalPages.value = response.pages;

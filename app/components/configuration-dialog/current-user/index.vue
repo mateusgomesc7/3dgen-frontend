@@ -26,7 +26,7 @@
         item-value="id"
         autocomplete="off"
         return-object
-        @update:model-value="(val) => usersStore.setCurrentUser(val)"
+        @update:model-value="handleChangeCurrentUser"
       />
     </v-col>
 
@@ -84,6 +84,13 @@ const updateCurrentUser = (user: User) => {
     users.value[index] = user;
   }
   usersStore.setCurrentUser(user);
+};
+
+const handleChangeCurrentUser = (user: User) => {
+  if (user.id === usersStore.currentUser?.id) return;
+
+  usersStore.setCurrentUser(user);
+  snackbarStore.showSnackbar("Current user updated", "info");
 };
 
 const deleteCurrentUser = async () => {
