@@ -10,13 +10,13 @@
       :key="message.id"
       no-gutters
       class="w-100 mb-8"
+      :class="message.id && openCodes[message.id] ? '' : 'row-chat-message'"
     >
       <v-col
         v-if="message.role === 'user'"
         align-self="end"
         class="mb-n8 d-flex justify-center"
         cols="12"
-        :class="hasAnyCodeOpened ? 'pr-2' : ''"
       >
         <MarkdownMessage :text="message.content" :role="message.role" />
       </v-col>
@@ -45,7 +45,7 @@
         v-if="message.role === 'assistant' && message.id"
         cols="12"
         xl="6"
-        class="mt-xl-0 mt-lg-4 mt-4"
+        class="mt-xl-0 pl-xl-3 mt-lg-4 mt-4"
       >
         <v-expand-x-transition
           @before-enter="transitioning[message.id] = true"
@@ -221,10 +221,6 @@ const onEditorInput = (id: number, value: string) => {
 const hasMessages = computed(() => {
   return messagesStore.messages.length > 0;
 });
-
-const hasAnyCodeOpened = computed(() => {
-  return Object.values(openCodes).some((isOpen) => isOpen);
-});
 </script>
 
 <style scoped lang="scss">
@@ -233,12 +229,17 @@ const hasAnyCodeOpened = computed(() => {
   max-width: 784px;
 }
 
+.row-chat-message {
+  max-width: 792px;
+}
+
 .chat-input-wrapper {
   position: sticky;
   bottom: 0;
   z-index: 10;
   background: rgba(var(--v-theme-surface));
   width: 100%;
+  max-width: 792px;
   padding-bottom: 10px;
   border-radius: 30px 30px 0 0;
   justify-items: center;
@@ -255,6 +256,11 @@ const hasAnyCodeOpened = computed(() => {
     position: sticky;
     top: 180px;
     align-self: flex-start;
+  }
+
+  .chat-container {
+    width: 100%;
+    max-width: 1500px;
   }
 }
 </style>

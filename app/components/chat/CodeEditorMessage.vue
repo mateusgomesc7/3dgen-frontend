@@ -10,7 +10,6 @@
       bg-color="grey-darken-3"
       rounded="lg"
       hide-details
-      min-width="774"
       class="code-editor-field"
       :loading="props.loading"
       @update:model-value="emitUpdate"
@@ -67,6 +66,7 @@ function emitUpdate(value) {
 
 <style scoped>
 .code-container {
+  width: 100%;
   max-width: 776px;
 }
 
