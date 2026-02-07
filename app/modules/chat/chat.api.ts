@@ -34,10 +34,6 @@ export const chatApi = {
     return api("/chats/", { method: "POST", body: data });
   },
 
-  update(id: number, data: ChatPayload): Promise<ChatResponse> {
-    return api(`/chats/${id}`, { method: "PUT", body: data });
-  },
-
   delete(id: number): Promise<Response> {
     return api(`/chats/${id}`, { method: "DELETE" });
   },
