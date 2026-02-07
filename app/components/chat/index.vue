@@ -1,7 +1,7 @@
 <template>
   <div
     ref="messagesContainer"
-    class="px-8 d-flex flex-column align-center"
+    class="px-8 d-flex flex-column align-center chat-container"
     :class="{ 'h-100': hasMessages }"
   >
     <v-row
@@ -229,8 +229,8 @@ const hasAnyCodeOpened = computed(() => {
 
 <style scoped lang="scss">
 .chat-container {
-  width: 840px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 784px;
 }
 
 .chat-input-wrapper {
@@ -238,7 +238,7 @@ const hasAnyCodeOpened = computed(() => {
   bottom: 0;
   z-index: 10;
   background: rgba(var(--v-theme-surface));
-  width: 784px;
+  width: 100%;
   padding-bottom: 10px;
   border-radius: 30px 30px 0 0;
   justify-items: center;

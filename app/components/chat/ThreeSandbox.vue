@@ -159,8 +159,7 @@ watch(() => props.code, render);
 <style scoped>
 .three-sandbox {
   position: relative;
-  width: 776px;
-  height: 500px;
+  aspect-ratio: 4/3;
   border-radius: 12px;
   z-index: 3;
   overflow: hidden;
@@ -170,7 +169,6 @@ watch(() => props.code, render);
 .sandbox-frame {
   width: 100%;
   height: 100%;
-  min-width: 488px;
   border: none;
 }
 
