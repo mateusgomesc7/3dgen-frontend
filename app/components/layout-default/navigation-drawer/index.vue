@@ -1,11 +1,15 @@
 <template>
   <v-navigation-drawer
     app
-    v-model="drawer"
-    permanent
-    :rail="configurationsStore.railNavigation"
-    :class="{ 'cursor-ew-resize': configurationsStore.railNavigation }"
+    :model-value="drawer"
+    :permanent="!mobile"
+    :temporary="mobile"
+    :rail="configurationsStore.railNavigation && !mobile"
+    :class="{
+      'cursor-ew-resize': configurationsStore.railNavigation,
+    }"
     @click="configurationsStore.setRailNavigation(false)"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <v-list>
       <v-list-item>
@@ -45,11 +49,7 @@
           <v-btn
             variant="text"
             class="cursor-ew-resize"
-            @click.stop="
-              configurationsStore.setRailNavigation(
-                !configurationsStore.railNavigation,
-              )
-            "
+            @click.stop="clickToCloseDrawer"
             size="30"
           >
             <v-icon size="25" class="rotate-90">mdi-window-closed</v-icon>
@@ -75,10 +75,10 @@
       ></v-list-item>
     </v-list>
 
-    <v-divider v-if="!configurationsStore.railNavigation"></v-divider>
+    <v-divider v-if="!configurationsStore.railNavigation || mobile"></v-divider>
 
     <div
-      v-show="!configurationsStore.railNavigation"
+      v-show="!configurationsStore.railNavigation || mobile"
       ref="chatContainer"
       class="chat-list-container"
       @scroll="onScroll"
@@ -98,7 +98,9 @@
     </div>
 
     <div class="mt-auto">
-      <v-divider v-if="!configurationsStore.railNavigation"></v-divider>
+      <v-divider
+        v-if="!configurationsStore.railNavigation || mobile"
+      ></v-divider>
       <div class="d-flex justify-center align-center py-2 ga-2 text-center">
         <v-btn
           variant="text"
@@ -106,12 +108,12 @@
         >
           <v-icon
             size="22"
-            :class="{ 'mr-2': !configurationsStore.railNavigation }"
+            :class="{ 'mr-2': !configurationsStore.railNavigation || mobile }"
           >
             mdi-account
           </v-icon>
           {{
-            !configurationsStore.railNavigation
+            !configurationsStore.railNavigation || mobile
               ? usersStores.currentUser?.name
               : ""
           }}
@@ -138,12 +140,16 @@
 import ChatList from "./ChatList.vue";
 import RenameChatDialog from "./RenameChatDialog.vue";
 import ConfirmationDialog from "@/components/common/ConfirmationDialog.vue";
+import { useDisplay } from "vuetify";
+
+const emits = defineEmits(["update:model-value"]);
 
 const configurationsStore = useConfigurationsStore();
 const chatsStore = useChatsStore();
 const usersStores = useUsersStore();
 const router = useRouter();
 const snackbarStore = useSnackbarStore();
+const { mobile } = useDisplay();
 
 const chatContainer = ref(null);
 const drawer = ref(true);
@@ -261,6 +267,14 @@ const deleteChat = async () => {
 
   showDeleteChatDialog.value = false;
   chatIdToDelete.value = null;
+};
+
+const clickToCloseDrawer = () => {
+  if (mobile.value && drawer.value) {
+    emits("update:model-value", false);
+  } else {
+    configurationsStore.setRailNavigation(!configurationsStore.railNavigation);
+  }
 };
 
 watch(

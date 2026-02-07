@@ -1,8 +1,8 @@
 <template>
   <v-layout>
-    <NavigationDrawer />
+    <NavigationDrawer v-model="drawer" />
 
-    <TopBar />
+    <TopBar @toggle-drawer="drawer = !drawer" />
 
     <v-main>
       <slot />
@@ -13,6 +13,21 @@
 <script setup lang="ts">
 import NavigationDrawer from "@/components/layout-default/navigation-drawer/index.vue";
 import TopBar from "@/components/layout-default/TopBar.vue";
+import { useDisplay } from "vuetify";
+
+const { mobile } = useDisplay();
+
+const drawer = ref(true);
+
+watch(
+  () => mobile.value,
+  (isMobile) => {
+    if (isMobile) {
+      drawer.value = false;
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped>
