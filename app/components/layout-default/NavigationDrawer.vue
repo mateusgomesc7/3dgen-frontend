@@ -84,7 +84,12 @@
       @scroll="onScroll"
     >
       <div class="mx-4 mt-4 font-weight-bold">Chats</div>
-      <ChatList :selected="chatSelected" @open-chat="openChat" />
+      <ChatList
+        :selected="chatSelected"
+        @open-chat="openChat"
+        @rename-chat="renameChat"
+        @delete-chat="openDeleteChatDialog"
+      />
     </div>
 
     <div class="mt-auto">
@@ -108,21 +113,32 @@
         </v-btn>
       </div>
     </div>
+
+    <ConfirmationDialog
+      v-model="showDeleteChatDialog"
+      title="Delete Chat"
+      confirmText="Are you sure you want to delete this chat?"
+      @confirm="deleteChat"
+    />
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
 import ChatList from "./ChatList.vue";
+import ConfirmationDialog from "@/components/common/ConfirmationDialog.vue";
 
 const configurationsStore = useConfigurationsStore();
 const chatsStore = useChatsStore();
 const usersStores = useUsersStore();
 const router = useRouter();
+const snackbarStore = useSnackbarStore();
 
 const chatContainer = ref(null);
 const drawer = ref(true);
+const showDeleteChatDialog = ref(false);
 const menuSelected = shallowRef<string[]>([]);
 const chatSelected = shallowRef<string[]>([]);
+const chatToDelete = ref<number | null>(null);
 const page = ref(1);
 const pageSize = 15;
 const totalPages = ref(1);
@@ -185,6 +201,34 @@ const loadChats = async (reset = false) => {
 
   totalPages.value = response.pages;
   page.value++;
+};
+
+const renameChat = (chatId: number) => {
+  console.log("Rename chat", chatId);
+};
+
+const openDeleteChatDialog = (chatId: number) => {
+  chatToDelete.value = chatId;
+  showDeleteChatDialog.value = true;
+};
+
+const deleteChat = async () => {
+  if (!chatToDelete.value) return;
+
+  const isCurrentChatDeleted =
+    chatsStore.currentChat?.id === chatToDelete.value;
+
+  const success = await chatsStore.deleteChat(chatToDelete.value);
+
+  if (success) {
+    if (isCurrentChatDeleted) {
+      router.replace("/");
+    }
+    snackbarStore.showSnackbar("Chat deleted successfully", "success");
+  }
+
+  showDeleteChatDialog.value = false;
+  chatToDelete.value = null;
 };
 
 watch(

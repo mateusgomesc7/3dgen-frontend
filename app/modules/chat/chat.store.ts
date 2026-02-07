@@ -77,6 +77,25 @@ export const useChatsStore = defineStore("chats", () => {
     }
   };
 
+  const deleteChat = async (chatId: number): Promise<boolean> => {
+    loading.value = true;
+    try {
+      await chatApi.delete(chatId);
+
+      chats.value = chats.value.filter((chat) => chat.id !== chatId);
+      if (currentChat.value?.id === chatId) {
+        clearCurrentChat();
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Failed to delete chat:", error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     chats,
     currentChat,
@@ -87,5 +106,6 @@ export const useChatsStore = defineStore("chats", () => {
     getPaginatedChats,
     getMessagesByChatId,
     createChat,
+    deleteChat,
   };
 });

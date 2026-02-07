@@ -52,6 +52,8 @@ const componentProps = defineProps<{
 const emits = defineEmits<{
   (e: "open-chat", chatId: number): void;
   (e: "update:selected", value: string[]): void;
+  (e: "rename-chat", chatId: number): void;
+  (e: "delete-chat", chatId: number): void;
 }>();
 
 const chatsStore = useChatsStore();
@@ -68,13 +70,13 @@ function openMenu(event: MouseEvent, chatId: number) {
 
 function renameChat() {
   if (!menuChatId.value) return;
-  console.log("Rename chat", menuChatId.value);
+  emits("rename-chat", menuChatId.value);
   showMenu.value = false;
 }
 
 function deleteChat() {
   if (!menuChatId.value) return;
-  console.log("Delete chat", menuChatId.value);
+  emits("delete-chat", menuChatId.value);
   showMenu.value = false;
 }
 
