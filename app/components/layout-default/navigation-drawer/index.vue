@@ -157,8 +157,8 @@ const page = ref(1);
 const pageSize = 15;
 const totalPages = ref(1);
 
-const fillChatList = async () => {
-  await loadChats();
+const fillChatList = async (reset = false) => {
+  await loadChats(reset);
 
   await nextTick();
 
@@ -172,7 +172,7 @@ const fillChatList = async () => {
 };
 
 onMounted(async () => {
-  await fillChatList();
+  await fillChatList(true);
 });
 
 const openChat = async (chatId: number) => {
@@ -275,6 +275,14 @@ watch(
     }
   },
   { immediate: true },
+);
+
+watch(
+  () => usersStores.currentUser,
+  async () => {
+    await fillChatList(true);
+    router.replace("/");
+  },
 );
 </script>
 
