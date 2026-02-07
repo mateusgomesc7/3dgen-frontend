@@ -41,4 +41,8 @@ export const chatApi = {
   delete(id: number): Promise<Response> {
     return api(`/chats/${id}`, { method: "DELETE" });
   },
+
+  rename(id: number, name: string): Promise<ChatResponse> {
+    return api(`/chats/${id}/rename`, { method: "PATCH", body: { name } });
+  },
 };

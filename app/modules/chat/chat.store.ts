@@ -96,6 +96,29 @@ export const useChatsStore = defineStore("chats", () => {
     }
   };
 
+  const renameChat = async (
+    chatId: number,
+    newName: string,
+  ): Promise<ChatResponse> => {
+    loading.value = true;
+    try {
+      const updatedChat = await chatApi.rename(chatId, newName);
+      const index = chats.value.findIndex((chat) => chat.id === chatId);
+      if (index !== -1) {
+        chats.value[index] = updatedChat;
+      }
+      if (currentChat.value?.id === chatId) {
+        currentChat.value.name = newName;
+      }
+      return updatedChat;
+    } catch (error) {
+      console.error("Failed to rename chat:", error);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     chats,
     currentChat,
@@ -107,5 +130,6 @@ export const useChatsStore = defineStore("chats", () => {
     getMessagesByChatId,
     createChat,
     deleteChat,
+    renameChat,
   };
 });

@@ -87,7 +87,7 @@
       <ChatList
         :selected="chatSelected"
         @open-chat="openChat"
-        @rename-chat="renameChat"
+        @rename-chat="openRenameChatDialog"
         @delete-chat="openDeleteChatDialog"
       />
     </div>
@@ -114,6 +114,12 @@
       </div>
     </div>
 
+    <RenameChatDialog
+      v-model="showRenameChatDialog"
+      :chat="chatToRename"
+      @save="renameChat"
+    />
+
     <ConfirmationDialog
       v-model="showDeleteChatDialog"
       title="Delete Chat"
@@ -125,6 +131,7 @@
 
 <script setup lang="ts">
 import ChatList from "./ChatList.vue";
+import RenameChatDialog from "./RenameChatDialog.vue";
 import ConfirmationDialog from "@/components/common/ConfirmationDialog.vue";
 
 const configurationsStore = useConfigurationsStore();
@@ -136,9 +143,11 @@ const snackbarStore = useSnackbarStore();
 const chatContainer = ref(null);
 const drawer = ref(true);
 const showDeleteChatDialog = ref(false);
+const showRenameChatDialog = ref(false);
 const menuSelected = shallowRef<string[]>([]);
 const chatSelected = shallowRef<string[]>([]);
-const chatToDelete = ref<number | null>(null);
+const chatIdToDelete = ref<number | null>(null);
+const chatToRename = ref<Chat | null>(null);
 const page = ref(1);
 const pageSize = 15;
 const totalPages = ref(1);
@@ -203,22 +212,39 @@ const loadChats = async (reset = false) => {
   page.value++;
 };
 
-const renameChat = (chatId: number) => {
-  console.log("Rename chat", chatId);
+const openRenameChatDialog = (chatId: number) => {
+  chatToRename.value =
+    chatsStore.chats.find((chat) => chat.id === chatId) || null;
+  showRenameChatDialog.value = true;
 };
 
 const openDeleteChatDialog = (chatId: number) => {
-  chatToDelete.value = chatId;
+  chatIdToDelete.value = chatId;
   showDeleteChatDialog.value = true;
 };
 
+const renameChat = async (chatManipulated: Chat) => {
+  if (!chatToRename.value || !chatManipulated.name) return;
+
+  const response = await chatsStore.renameChat(
+    chatToRename.value.id,
+    chatManipulated.name,
+  );
+
+  if (response) {
+    snackbarStore.showSnackbar("Chat updated successfully", "success");
+    showRenameChatDialog.value = false;
+    chatToRename.value = null;
+  }
+};
+
 const deleteChat = async () => {
-  if (!chatToDelete.value) return;
+  if (!chatIdToDelete.value) return;
 
   const isCurrentChatDeleted =
-    chatsStore.currentChat?.id === chatToDelete.value;
+    chatsStore.currentChat?.id === chatIdToDelete.value;
 
-  const success = await chatsStore.deleteChat(chatToDelete.value);
+  const success = await chatsStore.deleteChat(chatIdToDelete.value);
 
   if (success) {
     if (isCurrentChatDeleted) {
@@ -228,7 +254,7 @@ const deleteChat = async () => {
   }
 
   showDeleteChatDialog.value = false;
-  chatToDelete.value = null;
+  chatIdToDelete.value = null;
 };
 
 watch(
