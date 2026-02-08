@@ -63,11 +63,7 @@
       </v-col>
     </v-row>
 
-    <v-skeleton-loader
-      v-if="messagesStore.loadingSendMessage"
-      type="image"
-      width="775"
-    ></v-skeleton-loader>
+    <SkeletonLoader v-if="messagesStore.loadingSendMessage"></SkeletonLoader>
 
     <div ref="bottomEl" />
 
@@ -88,6 +84,7 @@ import ChatInput from "./ChatInput.vue";
 import MarkdownMessage from "./MarkdownMessage.vue";
 import ThreeSandbox from "./ThreeSandbox.vue";
 import CodeEditorMessage from "./CodeEditorMessage.vue";
+import SkeletonLoader from "./SkeletonLoader.vue";
 import type { MessagePayload } from "~/modules/message/message.types";
 
 const messagesStore = useMessagesStore();
@@ -243,12 +240,6 @@ const hasMessages = computed(() => {
   padding-bottom: 10px;
   border-radius: 30px 30px 0 0;
   justify-items: center;
-}
-
-:deep(.v-skeleton-loader__image) {
-  border-radius: 8px;
-  height: 498px;
-  margin-bottom: 32px;
 }
 
 @media (min-width: 1920px) {
