@@ -1,7 +1,7 @@
 <template>
   <v-textarea
     v-model="text"
-    placeholder="Describe the 3D object…"
+    :placeholder="placeholder"
     variant="outlined"
     width="100%"
     max-width="940px"
@@ -17,7 +17,7 @@
     persistent-hint
     :error-messages="
       !modelsStore.currentModel
-        ? 'Please select a model first in the settings.'
+        ? $t('components.chat.chat_input.no_selected_model')
         : ''
     "
     :readonly="!modelsStore.currentModel"
@@ -33,6 +33,10 @@
 </template>
 
 <script setup lang="ts">
+const props = defineProps<{
+  hasMessages: boolean;
+}>();
+
 const emit = defineEmits<{
   sendMessage: [text: string];
 }>();
@@ -58,6 +62,12 @@ const onKeyDown = (e: KeyboardEvent) => {
     generate();
   }
 };
+
+const placeholder = computed(() => {
+  return props.hasMessages
+    ? $t("components.chat.chat_input.placeholder_second")
+    : $t("components.chat.chat_input.placeholder_first");
+});
 </script>
 
 <style scoped>

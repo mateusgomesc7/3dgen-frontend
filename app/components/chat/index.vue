@@ -68,11 +68,14 @@
     <div ref="bottomEl" />
 
     <h2 v-if="!hasMessages" class="text-h4 mb-8">
-      What do you want to generate?
+      {{ $t("components.chat.welcome_question") }}
     </h2>
 
     <div class="chat-input-wrapper">
-      <ChatInput @send-message="handleSendMessage" />
+      <ChatInput
+        :has-messages="hasMessages"
+        @send-message="handleSendMessage"
+      />
     </div>
 
     <div v-if="!hasMessages" class="my-12"></div>

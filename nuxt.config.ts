@@ -25,9 +25,14 @@ export default defineNuxtConfig({
       });
     },
     "@pinia/nuxt",
+    "@nuxtjs/i18n",
   ],
   pinia: {
     storesDirs: ["modules/**"],
+  },
+  i18n: {
+    defaultLocale: "en",
+    locales: [{ code: "en", name: "English", file: "en.json" }],
   },
   vite: {
     vue: {

@@ -1,0 +1,12 @@
+{
+  "components": {
+    "chat": {
+      "welcome_question": "What kind of 3D experience do you want?",
+      "chat_input": {
+        "placeholder_first": "Imagine something… a game, a scene, or an object",
+        "placeholder_second": "Tell me what to change or add",
+        "no_selected_model": "Please select a model first in the settings."
+      }
+    }
+  }
+}
