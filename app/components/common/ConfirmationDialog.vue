@@ -19,16 +19,21 @@
 
         <v-card-text class="pb-5">
           <div class="text-subtitle-1">
-            {{ confirmText || "Are you sure you want to proceed?" }}
+            {{
+              confirmText ||
+              $t("components.common.confirmation_dialog.confirm_text")
+            }}
           </div>
         </v-card-text>
 
         <v-card-actions class="d-flex justify-end px-6 pb-4">
-          <v-btn text @click="isActive.value = false"> Cancel </v-btn>
+          <v-btn text @click="isActive.value = false">
+            {{ $t("utils.cancel_btn") }}
+          </v-btn>
           <v-btn
             color="white"
-            text="Confirm"
             variant="flat"
+            :text="$t('utils.confirm_btn')"
             @click="handleConfirmClick"
           >
           </v-btn>

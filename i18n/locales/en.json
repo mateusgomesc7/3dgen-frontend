@@ -1,11 +1,87 @@
 {
+  "utils": {
+    "confirm_btn": "Confirm",
+    "cancel_btn": "Cancel",
+    "save_btn": "Save",
+    "rules": {
+      "required": "This field is required",
+      "max_length": "This field must be less than {max} characters"
+    },
+    "hint": {
+      "max_length": "Max {max} characters"
+    }
+  },
   "components": {
     "chat": {
-      "welcome_question": "What kind of 3D experience do you want?",
+      "welcome_text": "What kind of 3D experience do you want?",
       "chat_input": {
         "placeholder_first": "Imagine something… a game, a scene, or an object",
         "placeholder_second": "Tell me what to change or add",
         "no_selected_model": "Please select a model first in the settings."
+      }
+    },
+    "common": {
+      "confirmation_dialog": {
+        "confirm_text": "Are you sure you want to proceed?"
+      }
+    },
+    "configuration_dialog": {
+      "title": "Configurations",
+      "messages": {
+        "model_deleted_success": "Model deleted successfully."
+      },
+      "current_provider_model": {
+        "label": "Current Provider & Model",
+        "add_model_btn": "New",
+        "title_delete_model": "Confirm Deletion",
+        "confirm_text_delete_model": "Are you sure you want to delete the current model?",
+        "messages": {
+          "model_updated_success": "Current model updated."
+        }
+      },
+      "current_user": {
+        "label": "Current User",
+        "add_user_btn": "New",
+        "title_delete_user": "Confirm Deletion",
+        "confirm_text_delete_user": "Are you sure you want to delete the current user?",
+        "messages": {
+          "user_updated_success": "Current user updated.",
+          "user_deleted_success": "User deleted successfully."
+        },
+        "maintain_user_dialog": {
+          "title_create": "Create User",
+          "title_edit": "Edit User",
+          "name_label": "Name",
+          "messages": {
+            "user_created_success": "User created successfully.",
+            "user_updated_success": "User updated successfully."
+          }
+        }
+      }
+    },
+    "layout_default": {
+      "navigation_drawer": {
+        "menu_new_chat": "New Chat",
+        "menu_library": "Library",
+        "your_chats": "Chats",
+        "title_delete_chat": "Delete Chat",
+        "confirm_text_delete_chat": "Are you sure you want to delete this chat?",
+        "messages": {
+          "chat_deleted_success": "Chat deleted successfully.",
+          "chat_updated_success": "Chat updated successfully."
+        },
+        "chat_list": {
+          "name_default": "Chat {chatId}",
+          "rename_menu": "Rename",
+          "delete_menu": "Delete"
+        },
+        "rename_chat_dialog": {
+          "title": "Rename Chat",
+          "name_label": "New Chat Name"
+        }
+      },
+      "top_bar": {
+        "title": "3DGen"
       }
     }
   }

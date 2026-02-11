@@ -1,14 +1,18 @@
 <template>
   <v-row>
     <v-col cols="12" class="d-flex ga-4 align-center">
-      <div class="font-weight-bold">Current User</div>
+      <div class="font-weight-bold">
+        {{ $t("components.configuration_dialog.current_user.label") }}
+      </div>
       <MaintainUserDialog @save="updateCurrentUser">
         <template #activator>
           <v-btn
             :disabled="props.loading"
+            :text="
+              $t('components.configuration_dialog.current_user.add_user_btn')
+            "
             size="small"
             color="white"
-            text="New"
             height="24"
           />
         </template>
@@ -48,8 +52,14 @@
       </MaintainUserDialog>
 
       <ConfirmationDialog
-        title="Confirm Deletion"
-        confirmText="Are you sure you want to delete the current user?"
+        :title="
+          $t('components.configuration_dialog.current_user.title_delete_user')
+        "
+        :confirm-text="
+          $t(
+            'components.configuration_dialog.current_user.confirm_text_delete_user',
+          )
+        "
         :disabled="disabledDelete"
         @confirm="deleteCurrentUser"
       >
@@ -78,6 +88,7 @@ const users = toRef(props.users);
 
 const usersStore = useUsersStore();
 const snackbarStore = useSnackbarStore();
+const { t } = useI18n();
 
 const updateCurrentUser = (user: User) => {
   if (!users.value.find((u) => u.id === user.id)) {
@@ -93,7 +104,13 @@ const handleChangeCurrentUser = (user: User) => {
   if (user.id === usersStore.currentUser?.id) return;
 
   usersStore.setCurrentUser(user);
-  snackbarStore.showSnackbar("Current user updated", "info", 1500);
+  snackbarStore.showSnackbar(
+    t(
+      "components.configuration_dialog.current_user.messages.user_updated_success",
+    ),
+    "info",
+    1500,
+  );
 };
 
 const deleteCurrentUser = async () => {
@@ -108,7 +125,12 @@ const deleteCurrentUser = async () => {
 
   if (nextUser) {
     usersStore.setCurrentUser(nextUser);
-    snackbarStore.showSnackbar("User deleted successfully", "success");
+    snackbarStore.showSnackbar(
+      t(
+        "components.configuration_dialog.current_user.messages.user_deleted_success",
+      ),
+      "success",
+    );
     return;
   }
 

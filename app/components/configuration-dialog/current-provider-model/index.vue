@@ -1,14 +1,20 @@
 <template>
   <v-row>
     <v-col cols="12" class="d-flex ga-4 align-center">
-      <div class="font-weight-bold">Current Provider and Model</div>
+      <div class="font-weight-bold">
+        {{ $t("components.configuration_dialog.current_provider_model.label") }}
+      </div>
       <v-btn
         v-if="ProviderType.OLLAMA === providersStore.currentProvider?.name"
         :disabled="props.loadingProviders || props.loadingModels"
+        :text="
+          $t(
+            'components.configuration_dialog.current_provider_model.add_model_btn',
+          )
+        "
         append-icon="mdi-open-in-new"
         size="small"
         color="white"
-        text="New"
         height="24"
         href="https://ollama.com/search"
         target="_blank"
@@ -56,8 +62,16 @@
         @click="emits('sync-provider-models')"
       />
       <ConfirmationDialog
-        title="Confirm Deletion"
-        confirmText="Are you sure you want to delete the current model?"
+        :title="
+          $t(
+            'components.configuration_dialog.current_provider_model.title_delete_model',
+          )
+        "
+        :confirmText="
+          $t(
+            'components.configuration_dialog.current_provider_model.confirm_text_delete_model',
+          )
+        "
         :disabled="disabledDelete"
         @confirm="emits('delete-current-model')"
       >
@@ -92,13 +106,20 @@ const emits = defineEmits<{
 const providersStore = useProvidersStore();
 const modelsStore = useModelsStore();
 const snackbarStore = useSnackbarStore();
+const { t } = useI18n();
 
 const handleChangeModel = (model: Model) => {
   if (modelsStore.currentModel && model.id === modelsStore.currentModel.id)
     return;
 
   modelsStore.setCurrentModel(model);
-  snackbarStore.showSnackbar("Current model updated", "info", 1500);
+  snackbarStore.showSnackbar(
+    t(
+      "components.configuration_dialog.current_provider_model.messages.model_updated_success",
+    ),
+    "info",
+    1500,
+  );
 };
 
 const disabledDelete = computed(() => {

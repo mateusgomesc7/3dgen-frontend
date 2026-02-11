@@ -62,15 +62,16 @@
 
     <v-list v-model:selected="menuSelected" density="compact" nav>
       <v-list-item
+        :title="$t('components.layout_default.navigation_drawer.menu_new_chat')"
         prepend-icon="mdi-square-edit-outline"
-        title="New chat"
         value="new-chat"
         @click.stop="openNewChat"
       ></v-list-item>
       <v-list-item
+        :title="$t('components.layout_default.navigation_drawer.menu_library')"
         prepend-icon="mdi-image-multiple-outline"
-        title="Library"
         value="library"
+        disabled
         @click.stop
       ></v-list-item>
     </v-list>
@@ -87,7 +88,7 @@
         v-if="chatsStore.chats.length > 0"
         class="mx-4 mt-4 font-weight-bold"
       >
-        Chats
+        {{ $t("components.layout_default.navigation_drawer.your_chats") }}
       </div>
       <ChatList
         :selected="chatSelected"
@@ -129,8 +130,14 @@
 
     <ConfirmationDialog
       v-model="showDeleteChatDialog"
-      title="Delete Chat"
-      confirmText="Are you sure you want to delete this chat?"
+      :title="
+        $t('components.layout_default.navigation_drawer.title_delete_chat')
+      "
+      :confirm-text="
+        $t(
+          'components.layout_default.navigation_drawer.confirm_text_delete_chat',
+        )
+      "
       @confirm="deleteChat"
     />
   </v-navigation-drawer>
@@ -150,6 +157,7 @@ const usersStores = useUsersStore();
 const router = useRouter();
 const snackbarStore = useSnackbarStore();
 const { mobile } = useDisplay();
+const { t } = useI18n();
 
 const chatContainer = ref(null);
 const drawer = ref(true);
@@ -244,7 +252,12 @@ const renameChat = async (chatManipulated: Chat) => {
   );
 
   if (response) {
-    snackbarStore.showSnackbar("Chat updated successfully", "success");
+    snackbarStore.showSnackbar(
+      t(
+        "components.layout_default.navigation_drawer.messages.chat_updated_success",
+      ),
+      "success",
+    );
     showRenameChatDialog.value = false;
     chatToRename.value = null;
   }
@@ -262,7 +275,12 @@ const deleteChat = async () => {
     if (isCurrentChatDeleted) {
       router.replace("/");
     }
-    snackbarStore.showSnackbar("Chat deleted successfully", "success");
+    snackbarStore.showSnackbar(
+      t(
+        "components.layout_default.navigation_drawer.messages.chat_deleted_success",
+      ),
+      "success",
+    );
   }
 
   showDeleteChatDialog.value = false;

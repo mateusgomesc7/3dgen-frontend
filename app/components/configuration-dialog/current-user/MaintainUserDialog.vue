@@ -13,29 +13,43 @@
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
           <div class="text-h5 px-2">
-            {{ editMode ? "Edit User" : "Create User" }}
+            {{
+              editMode
+                ? $t(
+                    "components.configuration_dialog.current_user.maintain_user_dialog.title_edit",
+                  )
+                : $t(
+                    "components.configuration_dialog.current_user.maintain_user_dialog.title_create",
+                  )
+            }}
           </div>
         </v-card-title>
 
         <v-card-text class="pb-1">
           <v-form ref="form" v-model="valid" @submit.prevent="save">
             <v-text-field
-              label="Name"
+              :label="
+                $t(
+                  'components.configuration_dialog.current_user.maintain_user_dialog.name_label',
+                )
+              "
               v-model="userManipulated.name"
               variant="outlined"
               autocomplete="off"
               required
-              :rules="[(v) => !!v || 'Name is required']"
+              :rules="[(v) => !!v || $t('utils.rules.required')]"
             />
           </v-form>
         </v-card-text>
 
         <v-card-actions class="d-flex justify-end px-6 pb-4">
-          <v-btn text @click="isActive.value = false"> Cancel </v-btn>
+          <v-btn text @click="isActive.value = false">
+            {{ $t("utils.cancel_btn") }}
+          </v-btn>
           <v-btn
             color="white"
-            text="Save"
             variant="flat"
+            :text="$t('utils.save_btn')"
             :disabled="disabledSave"
             @click="save"
           >
@@ -57,6 +71,7 @@ const emits = defineEmits<{
 
 const usersStore = useUsersStore();
 const snackbarStore = useSnackbarStore();
+const { t } = useI18n();
 
 const show = ref(false);
 const valid = ref<boolean>(false);
@@ -72,14 +87,24 @@ const save = async () => {
     if (response) {
       emits("save", response);
       show.value = false;
-      snackbarStore.showSnackbar("User updated successfully", "success");
+      snackbarStore.showSnackbar(
+        t(
+          "components.configuration_dialog.current_user.maintain_user_dialog.messages.user_updated_success",
+        ),
+        "success",
+      );
     }
   } else {
     const response = await usersStore.createUser(userManipulated.value);
     if (response) {
       emits("save", response);
       show.value = false;
-      snackbarStore.showSnackbar("User created successfully", "success");
+      snackbarStore.showSnackbar(
+        t(
+          "components.configuration_dialog.current_user.maintain_user_dialog.messages.user_created_success",
+        ),
+        "success",
+      );
     }
   }
 };

@@ -68,7 +68,7 @@
     <div ref="bottomEl" />
 
     <h2 v-if="!hasMessages" class="text-h4 mb-8">
-      {{ $t("components.chat.welcome_question") }}
+      {{ $t("components.chat.welcome_text") }}
     </h2>
 
     <div class="chat-input-wrapper">

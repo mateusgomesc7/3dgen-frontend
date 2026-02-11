@@ -7,7 +7,9 @@
     <template v-slot:default="{ isActive }">
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
-          <div class="text-h5 px-2">Configurations</div>
+          <div class="text-h5 px-2">
+            {{ $t("components.configuration_dialog.title") }}
+          </div>
 
           <v-btn
             icon="mdi-close"
@@ -49,6 +51,7 @@ const modelsStore = useModelsStore();
 const providersStore = useProvidersStore();
 const usersStore = useUsersStore();
 const snackbarStore = useSnackbarStore();
+const { t } = useI18n();
 
 const models = ref<Model[]>([]);
 const providers = ref<Provider[]>([]);
@@ -123,7 +126,10 @@ const deleteCurrentModel = async () => {
 
   if (nextModel) {
     modelsStore.setCurrentModel(nextModel);
-    snackbarStore.showSnackbar("Model deleted successfully", "success");
+    snackbarStore.showSnackbar(
+      t("components.configuration_dialog.messages.model_deleted_success"),
+      "success",
+    );
     return;
   }
 

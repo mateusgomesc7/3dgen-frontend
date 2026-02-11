@@ -1,6 +1,8 @@
 <template>
   <v-app-bar app name="app-bar">
-    <v-app-bar-title>3DGen</v-app-bar-title>
+    <v-app-bar-title>
+      {{ $t("components.layout_default.top_bar.title") }}
+    </v-app-bar-title>
     <template v-slot:prepend v-if="mobile">
       <v-btn
         variant="text"

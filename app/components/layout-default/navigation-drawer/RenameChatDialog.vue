@@ -13,7 +13,11 @@
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
           <div class="text-h5 px-2">
-            {{ "Rename Chat" }}
+            {{
+              $t(
+                "components.layout_default.navigation_drawer.rename_chat_dialog.title",
+              )
+            }}
           </div>
         </v-card-title>
 
@@ -24,29 +28,35 @@
             @submit.prevent="emits('save', chatManipulated)"
           >
             <v-text-field
-              label="Name"
+              :label="
+                $t(
+                  'components.layout_default.navigation_drawer.rename_chat_dialog.name_label',
+                )
+              "
               v-model="chatManipulated.name"
               variant="outlined"
               autocomplete="off"
               required
               :rules="[
-                (v) => !!v || 'Name is required',
+                (v) => !!v || $t('utils.rules.required'),
                 (v) =>
                   (v && v.length <= 100) ||
-                  'Name must be less than 100 characters',
+                  $t('utils.rules.max_length', { max: 100 }),
               ]"
-              hint="Max 100 characters"
+              :hint="$t('utils.hint.max_length', { max: 100 })"
               persistent-hint
             />
           </v-form>
         </v-card-text>
 
         <v-card-actions class="d-flex justify-end px-6 pb-4">
-          <v-btn text @click="isActive.value = false"> Cancel </v-btn>
+          <v-btn text @click="isActive.value = false">
+            {{ $t("utils.cancel_btn") }}
+          </v-btn>
           <v-btn
             color="white"
-            text="Save"
             variant="flat"
+            :text="$t('utils.save_btn')"
             :disabled="disabledSave"
             @click="emits('save', chatManipulated)"
           >
