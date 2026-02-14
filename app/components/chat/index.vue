@@ -4,64 +4,65 @@
     class="px-8 d-flex flex-column align-center chat-container"
     :class="{ 'h-100': hasMessages }"
   >
-    <v-row
-      v-if="hasMessages"
-      v-for="message in messagesStore.messages"
-      :key="message.id"
-      no-gutters
-      class="w-100 mb-8"
-      :class="message.id && openCodes[message.id] ? '' : 'row-chat-message'"
-    >
-      <v-col
-        v-if="message.role === 'user'"
-        align-self="end"
-        class="mb-n8 d-flex justify-center"
-        cols="12"
+    <template v-if="hasMessages">
+      <v-row
+        v-for="message in messagesStore.messages"
+        :key="message.id"
+        no-gutters
+        class="w-100 mb-8"
+        :class="message.id && openCodes[message.id] ? '' : 'row-chat-message'"
       >
-        <MarkdownMessage :text="message.content" :role="message.role" />
-      </v-col>
-
-      <v-col
-        v-if="message.role === 'assistant' && message.id"
-        cols="12"
-        :xl="openCodes[message.id] || transitioning[message.id] ? 6 : 12"
-      >
-        <div
-          class="three-sticky-wrapper"
-          :class="{ 'is-sticky': openCodes[message.id] }"
+        <v-col
+          v-if="message.role === 'user'"
+          align-self="end"
+          class="mb-n8 d-flex justify-center"
+          cols="12"
         >
-          <ThreeSandbox
-            :code="message.content"
-            :sandbox-id="message.id"
-            :is-dirty="isDirty[message.id]"
-            @open-code="openCode(message)"
-            @cancel-code="cancelCode(message)"
-            @save-code="saveCode(message)"
-          />
-        </div>
-      </v-col>
+          <MarkdownMessage :text="message.content" :role="message.role" />
+        </v-col>
 
-      <v-col
-        v-if="message.role === 'assistant' && message.id"
-        cols="12"
-        xl="6"
-        class="mt-xl-0 pl-xl-3 mt-lg-4 mt-4"
-      >
-        <v-expand-x-transition
-          @before-enter="transitioning[message.id] = true"
-          @after-leave="transitioning[message.id] = false"
+        <v-col
+          v-if="message.role === 'assistant' && message.id"
+          cols="12"
+          :xl="openCodes[message.id] || transitioning[message.id] ? 6 : 12"
         >
-          <div v-show="openCodes[message.id]">
-            <CodeEditorMessage
-              :model-value="draftContent[message.id] ?? message.content"
-              :role="message.role"
-              :loading="editorLoading[message.id]"
-              @update:modelValue="onEditorInput(message.id, $event)"
+          <div
+            class="three-sticky-wrapper"
+            :class="{ 'is-sticky': openCodes[message.id] }"
+          >
+            <ThreeSandbox
+              :code="message.content"
+              :sandbox-id="message.id"
+              :is-dirty="isDirty[message.id]"
+              @open-code="openCode(message)"
+              @cancel-code="cancelCode(message)"
+              @save-code="saveCode(message)"
             />
           </div>
-        </v-expand-x-transition>
-      </v-col>
-    </v-row>
+        </v-col>
+
+        <v-col
+          v-if="message.role === 'assistant' && message.id"
+          cols="12"
+          xl="6"
+          class="mt-xl-0 pl-xl-3 mt-lg-4 mt-4"
+        >
+          <v-expand-x-transition
+            @before-enter="transitioning[message.id] = true"
+            @after-leave="transitioning[message.id] = false"
+          >
+            <div v-show="openCodes[message.id]">
+              <CodeEditorMessage
+                :model-value="draftContent[message.id] ?? message.content"
+                :role="message.role"
+                :loading="editorLoading[message.id]"
+                @update:modelValue="onEditorInput(message.id, $event)"
+              />
+            </div>
+          </v-expand-x-transition>
+        </v-col>
+      </v-row>
+    </template>
 
     <SkeletonLoader v-if="messagesStore.loadingSendMessage"></SkeletonLoader>
 

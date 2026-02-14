@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   modules: [
     (_options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
-        // @ts-expect-error
+        // @ts-expect-error Vite config plugins type is not fully typed
         config.plugins.push(
           vuetify({
             autoImport: true,
@@ -26,6 +26,7 @@ export default defineNuxtConfig({
     },
     "@pinia/nuxt",
     "@nuxtjs/i18n",
+    "@nuxt/eslint",
   ],
   pinia: {
     storesDirs: ["modules/**"],
@@ -41,4 +42,5 @@ export default defineNuxtConfig({
       },
     },
   },
+  eslint: {},
 });

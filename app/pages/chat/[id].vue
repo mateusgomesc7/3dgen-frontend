@@ -24,7 +24,7 @@ const loadChat = async () => {
 
   try {
     await chatsStore.getMessagesByChatId(chatId.value);
-  } catch (error) {
+  } catch {
     router.replace("/");
   }
 };

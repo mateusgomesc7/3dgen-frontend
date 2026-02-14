@@ -60,8 +60,13 @@ export const useChatsStore = defineStore("chats", () => {
     chatJustCreated.value = true;
 
     try {
+      const userId = usersStore.currentUser?.id;
+      if (!userId) {
+        throw new Error("User ID is required to create a chat");
+      }
+
       const payload = {
-        user_id: usersStore.currentUser?.id!,
+        user_id: userId,
         user_prompt: userPrompt,
       };
       const newChat = await chatApi.create(payload);
